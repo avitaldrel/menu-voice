@@ -16,9 +16,9 @@
 
 ### Voice Interface (VOICE)
 - [ ] **VOICE-01**: User can speak commands and questions using speech recognition
-- [ ] **VOICE-02**: App responds with natural AI-generated voice via `<audio>` element (not SpeechSynthesis, to avoid screen reader conflict)
+- [x] **VOICE-02**: App responds with natural AI-generated voice via `<audio>` element (not SpeechSynthesis, to avoid screen reader conflict)
 - [ ] **VOICE-03**: App falls back to browser SpeechSynthesis when AI TTS is unavailable
-- [ ] **VOICE-04**: Voice loop uses strict state machine — listening OR speaking, never both
+- [x] **VOICE-04**: Voice loop uses strict state machine — listening OR speaking, never both
 - [ ] **VOICE-05**: App provides audio feedback during processing ("thinking" cue) so user knows it's working
 - [ ] **VOICE-06**: Speech recognition auto-restarts after silence/completion for continuous conversation
 
@@ -43,7 +43,7 @@
 - [ ] **A11Y-02**: ARIA live regions announce app state changes to screen readers
 - [x] **A11Y-03**: High-contrast, large touch targets for any visual UI elements
 - [x] **A11Y-04**: Keyboard navigable for users with partial vision
-- [ ] **A11Y-05**: TTS output uses `<audio>` element to avoid conflict with active screen readers
+- [x] **A11Y-05**: TTS output uses `<audio>` element to avoid conflict with active screen readers
 - [ ] **A11Y-06**: App announces its state clearly (listening, thinking, speaking, error)
 
 ---
@@ -84,9 +84,9 @@
 | MENU-04 | Phase 6 | Pending |
 | MENU-05 | Phase 3 | Pending |
 | VOICE-01 | Phase 2 | Pending |
-| VOICE-02 | Phase 2 | Pending |
+| VOICE-02 | Phase 2 | Complete |
 | VOICE-03 | Phase 2 | Pending |
-| VOICE-04 | Phase 2 | Pending |
+| VOICE-04 | Phase 2 | Complete |
 | VOICE-05 | Phase 2 | Pending |
 | VOICE-06 | Phase 2 | Pending |
 | CONV-01 | Phase 3 | Pending |
@@ -105,7 +105,7 @@
 | A11Y-02 | Phase 6 | Pending |
 | A11Y-03 | Phase 1 | Complete |
 | A11Y-04 | Phase 1 | Complete |
-| A11Y-05 | Phase 2 | Pending |
+| A11Y-05 | Phase 2 | Complete |
 | A11Y-06 | Phase 2 | Pending |
 
 **Coverage:** 29 requirements total | 29 mapped | 0 unmapped
