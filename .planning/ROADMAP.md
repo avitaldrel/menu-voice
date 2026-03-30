@@ -13,7 +13,7 @@ MenuVoice delivers voice-first menu navigation for blind and visually impaired u
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Menu Capture** - Project scaffolding, camera input, AI vision extraction of menu data (completed 2026-03-30)
-- [x] **Phase 2: Voice Interface** - Speech recognition, AI TTS via audio element, state machine, fallback TTS (completed 2026-03-30)
+- [ ] **Phase 2: Voice Interface** - Speech recognition, AI TTS via audio element, state machine, fallback TTS
 - [ ] **Phase 3: Menu Exploration via Voice** - Basic conversational Q&A about menu categories, items, and prices
 - [ ] **Phase 4: Smart Conversation & Decision Support** - Multi-turn context, recommendations, and order decision help
 - [ ] **Phase 5: Allergy & Preference System** - Local allergy profiles, proactive warnings, safety disclaimers
@@ -51,13 +51,14 @@ Plans:
   4. User hears an audio thinking cue while the app is processing their input
   5. After the app finishes speaking, speech recognition automatically restarts for the next utterance
   6. App announces its current state (listening, thinking, speaking, error) clearly to screen readers
-**Plans**: 4 plans
+**Plans**: 5 plans
 
 Plans:
 - [x] 02-01-PLAN.md — Voice state machine, test mocks, TTS API route
 - [x] 02-02-PLAN.md — Speech recognition, TTS client with sentence buffering, thinking chime
 - [x] 02-03-PLAN.md — Voice UI components (VoiceButton, VoiceStateIndicator, TranscriptDisplay, MicPermissionPrompt, TextInputFallback)
 - [x] 02-04-PLAN.md — useVoiceLoop hook, page integration, and human verification
+- [ ] 02-05-PLAN.md — Gap closure: fix voice loop auto-restart after speaking ends
 
 ### Phase 3: Menu Exploration via Voice
 **Goal**: User can ask about the menu by voice and get accurate spoken answers about categories, items, and prices
@@ -110,7 +111,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Menu Capture | 4/4 | Complete   | 2026-03-30 |
-| 2. Voice Interface | 4/4 | Complete   | 2026-03-30 |
+| 2. Voice Interface | 4/5 | Gap closure | - |
 | 3. Menu Exploration via Voice | 0/TBD | Not started | - |
 | 4. Smart Conversation & Decision Support | 0/TBD | Not started | - |
 | 5. Allergy & Preference System | 0/TBD | Not started | - |
