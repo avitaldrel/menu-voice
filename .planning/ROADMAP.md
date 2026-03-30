@@ -12,7 +12,7 @@ MenuVoice delivers voice-first menu navigation for blind and visually impaired u
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Menu Capture** - Project scaffolding, camera input, AI vision extraction of menu data
+- [x] **Phase 1: Foundation & Menu Capture** - Project scaffolding, camera input, AI vision extraction of menu data (completed 2026-03-30)
 - [ ] **Phase 2: Voice Interface** - Speech recognition, AI TTS via audio element, state machine, fallback TTS
 - [ ] **Phase 3: Menu Exploration via Voice** - Basic conversational Q&A about menu categories, items, and prices
 - [ ] **Phase 4: Smart Conversation & Decision Support** - Multi-turn context, recommendations, and order decision help
@@ -38,7 +38,7 @@ Plans:
 - [x] 01-01-PLAN.md — Project scaffolding, types, utilities, test infrastructure
 - [x] 01-02-PLAN.md — App shell and UI components (layout, header, all visual components)
 - [x] 01-03-PLAN.md — Claude Vision API route and menu extraction pipeline
-- [ ] 01-04-PLAN.md — Page integration, unit tests, and visual verification
+- [x] 01-04-PLAN.md — Page integration, unit tests, and visual verification
 
 ### Phase 2: Voice Interface
 **Goal**: User can speak and hear natural voice responses through a reliable, non-conflicting voice loop
@@ -103,7 +103,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Menu Capture | 2/4 | In Progress|  |
+| 1. Foundation & Menu Capture | 4/4 | Complete   | 2026-03-30 |
 | 2. Voice Interface | 0/TBD | Not started | - |
 | 3. Menu Exploration via Voice | 0/TBD | Not started | - |
 | 4. Smart Conversation & Decision Support | 0/TBD | Not started | - |
