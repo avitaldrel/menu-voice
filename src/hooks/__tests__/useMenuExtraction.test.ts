@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useMenuExtraction } from '@/hooks/useMenuExtraction';
+import type { AppAction } from '@/lib/app-state';
 import type { Menu } from '@/lib/menu-schema';
 
 // Mock dependencies
@@ -21,10 +22,10 @@ const mockMenu: Menu = {
 };
 
 describe('useMenuExtraction', () => {
-  let dispatch: ReturnType<typeof vi.fn>;
+  let dispatch: React.Dispatch<AppAction>;
 
   beforeEach(() => {
-    dispatch = vi.fn();
+    dispatch = vi.fn() as unknown as React.Dispatch<AppAction>;
     vi.clearAllMocks();
   });
 
