@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation-menu-capture/01-03-PLAN.md
-last_updated: "2026-03-30T03:06:24.813Z"
+stopped_at: Completed 01-foundation-menu-capture/01-02-PLAN.md
+last_updated: "2026-03-30T03:07:27.255Z"
 last_activity: 2026-03-30
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-29)
 ## Current Position
 
 Phase: 01 (foundation-menu-capture) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-03-30
 
@@ -54,6 +54,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 01-foundation-menu-capture P01 | 7 | 3 tasks | 6 files |
 | Phase 01-foundation-menu-capture P03 | 6 | 2 tasks | 2 files |
+| Phase 01-foundation-menu-capture P02 | 2 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,10 @@ Recent decisions affecting current work:
 - [Phase 01-foundation-menu-capture]: Scaffolded into temp dir then moved files to avoid npm naming restriction on directory names with spaces
 - [Phase 01-foundation-menu-capture]: Added passWithNoTests: true to vitest.config.ts so test runner exits 0 when no test files exist yet
 - [Phase 01-foundation-menu-capture]: claude-sonnet-4-6 used for menu extraction; images labeled page N of M for cross-page context; single API call per CLAUDE.md architecture
+- [Phase 01-foundation-menu-capture]: ProcessingState role=status div always in DOM — conditional mounting prevents screen reader announcements
+- [Phase 01-foundation-menu-capture]: ErrorState uses role=alert without aria-live=assertive — role=alert implies assertive, adding both causes VoiceOver iOS double-speak
+- [Phase 01-foundation-menu-capture]: ScanButton file input is sr-only + aria-hidden + tabIndex=-1 — fully removed from accessibility tree
+- [Phase 01-foundation-menu-capture]: RecentSessions returns null when loading or empty — avoids hydration flash, empty on first visit per D-02
 
 ### Pending Todos
 
@@ -83,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T03:06:24.805Z
-Stopped at: Completed 01-foundation-menu-capture/01-03-PLAN.md
+Last session: 2026-03-30T03:07:27.245Z
+Stopped at: Completed 01-foundation-menu-capture/01-02-PLAN.md
 Resume file: None
