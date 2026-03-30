@@ -28,6 +28,9 @@ export function useVoiceLoop(): {
   const speechManagerRef = useRef<SpeechManager | null>(null);
   const ttsClientRef = useRef<TTSClient | null>(null);
 
+  // Tracks previous voice status to detect speaking -> listening transition for auto-restart
+  const prevStatusRef = useRef<string>('idle');
+
   // Ref to hold accumulated response text for TranscriptDisplay
   const responseRef = useRef<string>('');
   const [responseText, setResponseText] = useState('');
@@ -161,14 +164,21 @@ export function useVoiceLoop(): {
   /**
    * Auto-restart speech recognition after speaking ends (PLAYBACK_ENDED -> listening).
    * The state machine transitions speaking -> listening on PLAYBACK_ENDED.
-   * We need to call speechManager.start() when this happens.
+   * Guard: only call start() when transitioning FROM speaking — the idle->listening
+   * path (initial tap) is handled by startListening() directly to avoid double-start.
    */
   useEffect(() => {
-    if (voiceState.status === 'listening' && speechManagerRef.current) {
-      // Only auto-restart if we have a speech manager (was already in use)
-      // Don't call start() on the initial mount idle->listening transition
-      // (startListening() handles that directly)
+    if (
+      voiceState.status === 'listening' &&
+      prevStatusRef.current === 'speaking' &&
+      speechManagerRef.current
+    ) {
+      // Auto-restart: speaking -> listening via PLAYBACK_ENDED
+      // startListening() handles the initial idle -> listening path,
+      // so we only call start() here for the post-speaking restart.
+      speechManagerRef.current.start();
     }
+    prevStatusRef.current = voiceState.status;
   }, [voiceState.status]);
 
   /**
