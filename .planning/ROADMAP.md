@@ -55,8 +55,8 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Voice state machine, test mocks, TTS API route
-- [ ] 02-02-PLAN.md — Speech recognition, TTS client with sentence buffering, thinking chime
-- [ ] 02-03-PLAN.md — Voice UI components (VoiceButton, VoiceStateIndicator, TranscriptDisplay, MicPermissionPrompt, TextInputFallback)
+- [x] 02-02-PLAN.md — Speech recognition, TTS client with sentence buffering, thinking chime
+- [x] 02-03-PLAN.md — Voice UI components (VoiceButton, VoiceStateIndicator, TranscriptDisplay, MicPermissionPrompt, TextInputFallback)
 - [ ] 02-04-PLAN.md — useVoiceLoop hook, page integration, and human verification
 
 ### Phase 3: Menu Exploration via Voice

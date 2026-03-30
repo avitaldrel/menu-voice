@@ -44,7 +44,7 @@
 - [x] **A11Y-03**: High-contrast, large touch targets for any visual UI elements
 - [x] **A11Y-04**: Keyboard navigable for users with partial vision
 - [x] **A11Y-05**: TTS output uses `<audio>` element to avoid conflict with active screen readers
-- [ ] **A11Y-06**: App announces its state clearly (listening, thinking, speaking, error)
+- [x] **A11Y-06**: App announces its state clearly (listening, thinking, speaking, error)
 
 ---
 
@@ -106,6 +106,6 @@
 | A11Y-03 | Phase 1 | Complete |
 | A11Y-04 | Phase 1 | Complete |
 | A11Y-05 | Phase 2 | Complete |
-| A11Y-06 | Phase 2 | Pending |
+| A11Y-06 | Phase 2 | Complete |
 
 **Coverage:** 29 requirements total | 29 mapped | 0 unmapped
