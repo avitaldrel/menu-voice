@@ -73,7 +73,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — Chat API route, system prompt builder with full menu JSON, unit tests
-- [ ] 03-02-PLAN.md — Voice loop chat integration, proactive overview trigger, human verification
+- [x] 03-02-PLAN.md — Voice loop chat integration, proactive overview trigger, human verification
 
 ### Phase 4: Smart Conversation & Decision Support
 **Goal**: App maintains conversation context across turns and helps the user narrow down choices and decide what to order

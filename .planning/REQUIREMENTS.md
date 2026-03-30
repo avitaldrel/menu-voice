@@ -12,7 +12,7 @@
 - [x] **MENU-02**: User can capture multiple menu pages in a single session
 - [x] **MENU-03**: App processes menu photos into structured menu data (categories, items, descriptions, prices) via AI vision
 - [ ] **MENU-04**: App detects when a photo is unreadable and voice-guides user to retake it
-- [ ] **MENU-05**: App presents a proactive spoken overview of the restaurant type and menu categories after processing
+- [x] **MENU-05**: App presents a proactive spoken overview of the restaurant type and menu categories after processing
 
 ### Voice Interface (VOICE)
 - [x] **VOICE-01**: User can speak commands and questions using speech recognition
@@ -82,7 +82,7 @@
 | MENU-02 | Phase 1 | Complete |
 | MENU-03 | Phase 1 | Complete |
 | MENU-04 | Phase 6 | Pending |
-| MENU-05 | Phase 3 | Pending |
+| MENU-05 | Phase 3 | Complete |
 | VOICE-01 | Phase 2 | Complete |
 | VOICE-02 | Phase 2 | Complete |
 | VOICE-03 | Phase 2 | Complete |
