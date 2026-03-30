@@ -54,13 +54,13 @@ Exceptions:
 |------|------|--------|-------------|
 | Body | 16px | 400 (regular) | 1.5 |
 | Label | 18px | 600 (semibold) | 1.4 |
-| Heading | 20px | 700 (bold) | 1.2 |
+| Heading | 20px | 600 (semibold) | 1.2 |
 | Status/State | 14px | 400 (regular) | 1.4 |
 
 **Notes (source: Phase 1 codebase):**
 - Label (18px/600) matches existing button and status text convention (`text-lg font-semibold`)
-- Heading (20px/700) matches Header brand name (`text-xl font-bold`)
-- Only 2 weights used: 400 and 600/700 — bold only for headings, semibold for all interactive labels
+- Heading (20px/600) matches Header brand name style — consolidated to semibold (weight 700 removed, weight 600 used throughout)
+- Only 2 weights used: 400 (regular) and 600 (semibold) — semibold for all headings and interactive labels, regular for body and status text
 - Status/State (14px/400) used for the ARIA live region visible text and transcript display below microphone button
 
 ---
@@ -109,7 +109,7 @@ This is Phase 2's primary new visual component. The contract for each state:
 | `listening` | "Listening..." | Mic icon + pulsing blue ring | Blue-600 ring |
 | `processing` | "Thinking..." | Spinning ring (existing Phase 1 pattern) | Black spinner |
 | `speaking` | "Speaking..." | Animated speaking dots (3-dot bounce) | Green-600 dots |
-| `error` | "Something went wrong" | Static mic icon, muted state | Red-700 label |
+| `error` | "Something went wrong — tap to retry" | Static mic icon, muted state | Red-700 label |
 
 The ARIA live region (`role="status" aria-live="polite"`) announces state label text on every state transition. This is an invisible region — the visible label below the button provides the visual equivalent.
 
@@ -143,7 +143,7 @@ Displayed only when `window.SpeechRecognition` and `window.webkitSpeechRecogniti
 
 - **Message:** "Voice recognition is not available in this browser. Try Chrome or Safari for the full experience."
 - **Style:** `role="alert"`, `bg-yellow-50 border border-yellow-200 rounded-lg p-4` (matches Phase 1 warning style)
-- **Text input:** Standard `<input type="text">` with `min-h-[48px]` and submit button labeled "Send"
+- **Text input:** Standard `<input type="text">` with `min-h-[48px]` and submit button labeled "Send Question"
 - **Font:** 16px/400 (body)
 
 ---
@@ -155,7 +155,7 @@ Shown once before the browser's native permission dialog fires, so blind users k
 - **Copy:** "MenuVoice needs your microphone to hear your questions. When prompted, tap Allow."
 - **Role:** `role="status"` (not alert — informational, not urgent)
 - **Style:** `bg-gray-50 border border-gray-200 rounded-lg p-4 text-base` with a dismiss button
-- **Dismiss button:** "Got it" — `min-h-[48px] px-6 text-lg font-semibold bg-black text-white rounded-2xl`
+- **Dismiss button:** "Got it, continue" — `min-h-[48px] px-6 text-lg font-semibold bg-black text-white rounded-2xl`
 
 ---
 
@@ -184,14 +184,15 @@ Shows the user's last spoken utterance while processing, and assistant response 
 | State indicator — listening | "Listening..." |
 | State indicator — processing | "Thinking..." |
 | State indicator — speaking | "Speaking..." |
-| State indicator — error | "Something went wrong" |
+| State indicator — error | "Something went wrong — tap to retry" |
 | Empty state (no menu loaded) | "Scan a menu first to start a voice conversation." |
 | Mic permission pre-prompt | "MenuVoice needs your microphone to hear your questions. When prompted, tap Allow." |
-| Mic permission dismiss | "Got it" |
+| Mic permission dismiss | "Got it, continue" |
 | No speech detected (timeout) | "I didn't catch that. Tap to try again." |
 | Speech recognition error | "Microphone error. Check your permissions and try again." |
 | TTS fallback notice | "Using device voice. Audio quality may vary." |
 | Firefox fallback notice | "Voice recognition is not available in this browser. Try Chrome or Safari for the full experience." |
+| Firefox fallback submit button | "Send Question" |
 | Interrupt speaking — confirm | None required — tapping during `speaking` state immediately stops playback and returns to `idle`. No confirmation dialog. |
 
 **Destructive actions in this phase:**
