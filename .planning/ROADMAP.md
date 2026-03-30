@@ -69,7 +69,11 @@ Plans:
   2. User can ask "What pasta do you have?" and hear a list of items in that category with prices
   3. User can ask about a specific item and hear its description, ingredients, and price
   4. Conversation uses the full extracted menu JSON as context (no summarization or truncation)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Chat API route, system prompt builder with full menu JSON, unit tests
+- [ ] 03-02-PLAN.md — Voice loop chat integration, proactive overview trigger, human verification
 
 ### Phase 4: Smart Conversation & Decision Support
 **Goal**: App maintains conversation context across turns and helps the user narrow down choices and decide what to order
@@ -112,7 +116,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation & Menu Capture | 4/4 | Complete   | 2026-03-30 |
 | 2. Voice Interface | 5/5 | Complete | 2026-03-30 |
-| 3. Menu Exploration via Voice | 0/TBD | Not started | - |
+| 3. Menu Exploration via Voice | 0/2 | Not started | - |
 | 4. Smart Conversation & Decision Support | 0/TBD | Not started | - |
 | 5. Allergy & Preference System | 0/TBD | Not started | - |
 | 6. Accessibility Hardening & Guided Retake | 0/TBD | Not started | - |
