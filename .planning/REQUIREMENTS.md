@@ -23,12 +23,12 @@
 - [x] **VOICE-06**: Speech recognition auto-restarts after silence/completion for continuous conversation
 
 ### Conversational Exploration (CONV)
-- [ ] **CONV-01**: User can ask about menu categories ("What pasta do you have?")
-- [ ] **CONV-02**: User can ask about specific items — ingredients, preparation, description
+- [x] **CONV-01**: User can ask about menu categories ("What pasta do you have?")
+- [x] **CONV-02**: User can ask about specific items — ingredients, preparation, description
 - [ ] **CONV-03**: User can ask for recommendations based on preferences ("Something light", "What's popular")
 - [ ] **CONV-04**: App maintains conversation context across multiple turns
 - [ ] **CONV-05**: App helps user narrow down choices and decide what to order
-- [ ] **CONV-06**: App uses full extracted menu data in conversation context (no summarization)
+- [x] **CONV-06**: App uses full extracted menu data in conversation context (no summarization)
 
 ### Allergy & Preference Management (ALLERGY)
 - [ ] **ALLERGY-01**: User can create a profile with allergies and food preferences stored locally
@@ -89,12 +89,12 @@
 | VOICE-04 | Phase 2 | Complete |
 | VOICE-05 | Phase 2 | Complete |
 | VOICE-06 | Phase 2 | Complete |
-| CONV-01 | Phase 3 | Pending |
-| CONV-02 | Phase 3 | Pending |
+| CONV-01 | Phase 3 | Complete |
+| CONV-02 | Phase 3 | Complete |
 | CONV-03 | Phase 4 | Pending |
 | CONV-04 | Phase 4 | Pending |
 | CONV-05 | Phase 4 | Pending |
-| CONV-06 | Phase 3 | Pending |
+| CONV-06 | Phase 3 | Complete |
 | ALLERGY-01 | Phase 5 | Pending |
 | ALLERGY-02 | Phase 5 | Pending |
 | ALLERGY-03 | Phase 5 | Pending |

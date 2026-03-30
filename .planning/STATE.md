@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Completed 02-voice-interface/02-05-PLAN.md — VOICE-06 gap closed, Phase 2 all requirements satisfied
-last_updated: "2026-03-30T19:46:15.668Z"
+status: executing
+stopped_at: Completed 03-menu-exploration-via-voice/03-01-PLAN.md — streaming chat API with system prompt builder, 16 new tests, 173 total passing
+last_updated: "2026-03-30T21:40:09.930Z"
 last_activity: 2026-03-30
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 11
+  completed_plans: 10
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** A blind person can independently understand and choose from any restaurant menu through voice conversation.
-**Current focus:** Phase 02 — voice-interface
+**Current focus:** Phase 03 — menu-exploration-via-voice
 
 ## Current Position
 
-Phase: 02 (voice-interface) — EXECUTING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
+Phase: 03 (menu-exploration-via-voice) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-30
 
 Progress: [░░░░░░░░░░] 0%
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-voice-interface P02 | 16 | 3 tasks | 7 files |
 | Phase 02-voice-interface P04 | 5 | 2 tasks | 3 files |
 | Phase 02-voice-interface P05 | 8 | 1 tasks | 2 files |
+| Phase 03-menu-exploration-via-voice P01 | 4 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,9 @@ Recent decisions affecting current work:
 - [Phase 02-voice-interface]: Phase 2 TTS response is a placeholder echo — Phase 3 (AI Conversation) will replace triggerResponse with real Claude streaming
 - [Phase 02-voice-interface]: D-01 auto-start useEffect intentionally omits voiceState.status and startListening from deps — fires only on app state transition to results, not on every voice state change
 - [Phase 02-voice-interface]: prevStatusRef guard in useEffect: track previous status string in a ref to distinguish speaking->listening (auto-restart) from idle->listening (initial tap), preventing double-call on startListening path
+- [Phase 03-menu-exploration-via-voice]: claude-sonnet-4-6 with max_tokens 512 for chat responses — same model as menu extraction, concise voice answers
+- [Phase 03-menu-exploration-via-voice]: Plain-text streaming response for /api/chat — client pipes chunks directly into TTS sentence buffering
+- [Phase 03-menu-exploration-via-voice]: ReadableStream.cancel() calls stream.abort() — Anthropic connection cleaned up on client disconnect
 
 ### Pending Todos
 
@@ -109,6 +113,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T19:46:15.653Z
-Stopped at: Completed 02-voice-interface/02-05-PLAN.md — VOICE-06 gap closed, Phase 2 all requirements satisfied
+Last session: 2026-03-30T21:40:09.883Z
+Stopped at: Completed 03-menu-exploration-via-voice/03-01-PLAN.md — streaming chat API with system prompt builder, 16 new tests, 173 total passing
 Resume file: None

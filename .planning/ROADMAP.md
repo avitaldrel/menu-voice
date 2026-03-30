@@ -72,7 +72,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Chat API route, system prompt builder with full menu JSON, unit tests
+- [x] 03-01-PLAN.md — Chat API route, system prompt builder with full menu JSON, unit tests
 - [ ] 03-02-PLAN.md — Voice loop chat integration, proactive overview trigger, human verification
 
 ### Phase 4: Smart Conversation & Decision Support
@@ -116,7 +116,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation & Menu Capture | 4/4 | Complete   | 2026-03-30 |
 | 2. Voice Interface | 5/5 | Complete | 2026-03-30 |
-| 3. Menu Exploration via Voice | 0/2 | Not started | - |
+| 3. Menu Exploration via Voice | 1/2 | In Progress|  |
 | 4. Smart Conversation & Decision Support | 0/TBD | Not started | - |
 | 5. Allergy & Preference System | 0/TBD | Not started | - |
 | 6. Accessibility Hardening & Guided Retake | 0/TBD | Not started | - |
