@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: verifying
-stopped_at: Completed 02-voice-interface/02-04-PLAN.md — awaiting human verification of voice loop
-last_updated: "2026-03-30T18:39:45.673Z"
+stopped_at: Completed 02-voice-interface/02-05-PLAN.md — VOICE-06 gap closed, Phase 2 all requirements satisfied
+last_updated: "2026-03-30T19:46:15.668Z"
 last_activity: 2026-03-30
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 9
+  completed_plans: 9
   percent: 0
 ---
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-voice-interface P03 | 15 | 2 tasks | 8 files |
 | Phase 02-voice-interface P02 | 16 | 3 tasks | 7 files |
 | Phase 02-voice-interface P04 | 5 | 2 tasks | 3 files |
+| Phase 02-voice-interface P05 | 8 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,7 @@ Recent decisions affecting current work:
 - [Phase 02-voice-interface]: useVoiceLoop creates SpeechManager and TTSClient lazily in startListening — avoids SSR issues from constructors at hook initialization
 - [Phase 02-voice-interface]: Phase 2 TTS response is a placeholder echo — Phase 3 (AI Conversation) will replace triggerResponse with real Claude streaming
 - [Phase 02-voice-interface]: D-01 auto-start useEffect intentionally omits voiceState.status and startListening from deps — fires only on app state transition to results, not on every voice state change
+- [Phase 02-voice-interface]: prevStatusRef guard in useEffect: track previous status string in a ref to distinguish speaking->listening (auto-restart) from idle->listening (initial tap), preventing double-call on startListening path
 
 ### Pending Todos
 
@@ -107,6 +109,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T18:39:45.655Z
-Stopped at: Completed 02-voice-interface/02-04-PLAN.md — awaiting human verification of voice loop
+Last session: 2026-03-30T19:46:15.653Z
+Stopped at: Completed 02-voice-interface/02-05-PLAN.md — VOICE-06 gap closed, Phase 2 all requirements satisfied
 Resume file: None

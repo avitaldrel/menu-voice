@@ -58,7 +58,7 @@ Plans:
 - [x] 02-02-PLAN.md — Speech recognition, TTS client with sentence buffering, thinking chime
 - [x] 02-03-PLAN.md — Voice UI components (VoiceButton, VoiceStateIndicator, TranscriptDisplay, MicPermissionPrompt, TextInputFallback)
 - [x] 02-04-PLAN.md — useVoiceLoop hook, page integration, and human verification
-- [ ] 02-05-PLAN.md — Gap closure: fix voice loop auto-restart after speaking ends
+- [x] 02-05-PLAN.md — Gap closure: fix voice loop auto-restart after speaking ends
 
 ### Phase 3: Menu Exploration via Voice
 **Goal**: User can ask about the menu by voice and get accurate spoken answers about categories, items, and prices
