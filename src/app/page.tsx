@@ -20,6 +20,7 @@ const initialState: AppState = { status: 'idle' };
 export default function HomePage() {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const { extract } = useMenuExtraction(dispatch);
+  const menu = state.status === 'results' ? state.menu : null;
   const {
     voiceState,
     startListening,
@@ -30,7 +31,8 @@ export default function HomePage() {
     dismissPermissionPrompt,
     transcript,
     response,
-  } = useVoiceLoop();
+    triggerOverview,
+  } = useVoiceLoop(menu);
 
   // Map mic button taps to voice state transitions per UI-SPEC State Machine Interaction Contract
   const handleMicTap = useCallback(() => {
@@ -47,17 +49,15 @@ export default function HomePage() {
     }
   }, [voiceState.status, startListening, stopListening]);
 
-  // D-01: Auto-start listening when app enters results state and voice is supported.
-  // Phase 2 approximation: triggers on results state entry.
-  // Phase 3 will refine this to trigger after the menu overview TTS has finished speaking (MENU-05).
+  // MENU-05: Proactive overview — triggered once when app enters results state.
+  // Replaces Phase 2 D-01 auto-start. Voice loop begins listening automatically
+  // after overview TTS finishes (PLAYBACK_ENDED -> listening via state machine).
   useEffect(() => {
-    if (state.status === 'results' && isSupported && voiceState.status === 'idle') {
-      startListening();
+    if (state.status === 'results' && voiceState.status === 'idle') {
+      triggerOverview();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.status, isSupported]);
-  // Note: intentionally omit voiceState.status and startListening from deps —
-  // we only want this to fire on app state transition to 'results', not on every voice state change.
+  }, [state.status]);
 
   return (
     <div className="max-w-lg mx-auto">
