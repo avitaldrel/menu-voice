@@ -63,3 +63,21 @@ Object.defineProperty(window, 'speechSynthesis', {
     onvoiceschanged: null,
   },
 });
+
+// SpeechSynthesisUtterance mock — needed for TTS fallback in jsdom
+class MockSpeechSynthesisUtterance {
+  text: string;
+  lang: string = 'en-US';
+  rate: number = 1.0;
+  volume: number = 1.0;
+  onend: (() => void) | null = null;
+  onerror: (() => void) | null = null;
+  constructor(text: string) {
+    this.text = text;
+  }
+}
+
+Object.defineProperty(window, 'SpeechSynthesisUtterance', {
+  writable: true,
+  value: MockSpeechSynthesisUtterance,
+});
