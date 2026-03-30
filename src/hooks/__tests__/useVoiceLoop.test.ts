@@ -179,6 +179,7 @@ describe('useVoiceLoop', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllGlobals();
   });
 
   // Test 1: Initial state
@@ -235,7 +236,7 @@ describe('useVoiceLoop', () => {
 
   // Test 6: handleTextInput dispatches SPEECH_RESULT
   it('handleTextInput dispatches SPEECH_RESULT transitioning to processing', async () => {
-    global.fetch = makeFetchMock(['response text']);
+    vi.stubGlobal('fetch', makeFetchMock(['response text']));
     const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
@@ -254,7 +255,7 @@ describe('useVoiceLoop', () => {
 
   // Test 7: thinking chime starts on processing state
   it('starts thinking chime when entering processing state', async () => {
-    global.fetch = makeFetchMock(['test response']);
+    vi.stubGlobal('fetch', makeFetchMock(['test response']));
     const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
@@ -271,7 +272,7 @@ describe('useVoiceLoop', () => {
 
   // Test 8: thinking chime stops on non-processing state
   it('stops thinking chime when leaving processing state', async () => {
-    global.fetch = makeFetchMock(['test response']);
+    vi.stubGlobal('fetch', makeFetchMock(['test response']));
     const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
@@ -297,7 +298,7 @@ describe('useVoiceLoop', () => {
 
   // Test 9: onTranscript callback transitions state to processing
   it('SpeechManager onTranscript transitions state to processing', async () => {
-    global.fetch = makeFetchMock(['specials response']);
+    vi.stubGlobal('fetch', makeFetchMock(['specials response']));
     const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
@@ -365,7 +366,7 @@ describe('useVoiceLoop', () => {
 
   // Test 14: PLAYBACK_ENDED auto-restarts listening
   it('PLAYBACK_ENDED (via TTS onSpeakingEnd) auto-restarts to listening', async () => {
-    global.fetch = makeFetchMock(['some answer']);
+    vi.stubGlobal('fetch', makeFetchMock(['some answer']));
     const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
@@ -409,7 +410,7 @@ describe('useVoiceLoop', () => {
 
   // Test 16: Full voice loop cycle — start, speak, process, play, auto-restart
   it('completes full voice loop cycle with auto-restart calling start() twice', async () => {
-    global.fetch = makeFetchMock(['We have tiramisu and gelato.']);
+    vi.stubGlobal('fetch', makeFetchMock(['We have tiramisu and gelato.']));
     const { result } = renderHook(() => useVoiceLoop(null));
 
     // 1. User starts listening
@@ -445,7 +446,7 @@ describe('useVoiceLoop', () => {
   // Test 17: triggerResponse sends fetch to /api/chat with correct body
   it('handleTextInput sends fetch to /api/chat with correct body', async () => {
     const fetchMock = makeFetchMock(['pasta response']);
-    global.fetch = fetchMock;
+    vi.stubGlobal('fetch', fetchMock);
 
     const { result } = renderHook(() => useVoiceLoop(testMenu));
 
@@ -473,7 +474,7 @@ describe('useVoiceLoop', () => {
 
   // Test 18: streaming response feeds into TTSClient
   it('streaming response feeds chunks into TTSClient and flushes', async () => {
-    global.fetch = makeFetchMock(['Spaghetti ', 'Carbonara.']);
+    vi.stubGlobal('fetch', makeFetchMock(['Spaghetti ', 'Carbonara.']));
 
     const { result } = renderHook(() => useVoiceLoop(testMenu));
 
@@ -495,7 +496,7 @@ describe('useVoiceLoop', () => {
     const fetchMock = vi.fn()
       .mockResolvedValueOnce({ ok: true, body: makeReadableStream(['First answer.']) })
       .mockResolvedValueOnce({ ok: true, body: makeReadableStream(['Second answer.']) });
-    global.fetch = fetchMock;
+    vi.stubGlobal('fetch', fetchMock);
 
     const { result } = renderHook(() => useVoiceLoop(testMenu));
 
@@ -529,7 +530,7 @@ describe('useVoiceLoop', () => {
   // Test 20: triggerOverview primes messages with OVERVIEW_USER_MESSAGE
   it('triggerOverview primes messages with OVERVIEW_USER_MESSAGE and calls /api/chat', async () => {
     const fetchMock = makeFetchMock(['This is a dinner bistro with 3 categories.']);
-    global.fetch = fetchMock;
+    vi.stubGlobal('fetch', fetchMock);
 
     const { result } = renderHook(() => useVoiceLoop(testMenu));
 
@@ -551,7 +552,7 @@ describe('useVoiceLoop', () => {
   // Test 21: triggerOverview is a no-op when menu is null
   it('triggerOverview is a no-op when menu is null', async () => {
     const fetchMock = vi.fn();
-    global.fetch = fetchMock;
+    vi.stubGlobal('fetch', fetchMock);
 
     const { result } = renderHook(() => useVoiceLoop(null));
 
@@ -581,7 +582,7 @@ describe('useVoiceLoop', () => {
     const fetchMock = vi.fn()
       .mockReturnValueOnce(new Promise(() => { /* first request hangs */ }))
       .mockResolvedValueOnce({ ok: true, body: makeReadableStream(['quick answer']) });
-    global.fetch = fetchMock;
+    vi.stubGlobal('fetch', fetchMock);
 
     const { result } = renderHook(() => useVoiceLoop(testMenu));
 
@@ -607,7 +608,7 @@ describe('useVoiceLoop', () => {
 
   // Test 23: fetch error dispatches error state
   it('fetch failure dispatches ERROR state', async () => {
-    global.fetch = vi.fn().mockResolvedValue({ ok: false, body: null });
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, body: null }));
 
     const { result } = renderHook(() => useVoiceLoop(testMenu));
 
