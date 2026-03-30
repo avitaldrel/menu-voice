@@ -51,7 +51,13 @@ Plans:
   4. User hears an audio thinking cue while the app is processing their input
   5. After the app finishes speaking, speech recognition automatically restarts for the next utterance
   6. App announces its current state (listening, thinking, speaking, error) clearly to screen readers
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Voice state machine, test mocks, TTS API route
+- [ ] 02-02-PLAN.md — Speech recognition, TTS client with sentence buffering, thinking chime
+- [ ] 02-03-PLAN.md — Voice UI components (VoiceButton, VoiceStateIndicator, TranscriptDisplay, MicPermissionPrompt, TextInputFallback)
+- [ ] 02-04-PLAN.md — useVoiceLoop hook, page integration, and human verification
 
 ### Phase 3: Menu Exploration via Voice
 **Goal**: User can ask about the menu by voice and get accurate spoken answers about categories, items, and prices
@@ -104,7 +110,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Menu Capture | 4/4 | Complete   | 2026-03-30 |
-| 2. Voice Interface | 0/TBD | Not started | - |
+| 2. Voice Interface | 0/4 | Planning complete | - |
 | 3. Menu Exploration via Voice | 0/TBD | Not started | - |
 | 4. Smart Conversation & Decision Support | 0/TBD | Not started | - |
 | 5. Allergy & Preference System | 0/TBD | Not started | - |
