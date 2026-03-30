@@ -31,8 +31,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. App sends photos to AI vision and returns structured data with categories, items, descriptions, and prices
   4. All visual UI elements have high contrast and large touch targets
   5. All interactive elements are keyboard navigable
-**Plans**: TBD
+**Plans**: 4 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 01-01-PLAN.md — Project scaffolding, types, utilities, test infrastructure
+- [ ] 01-02-PLAN.md — App shell and UI components (layout, header, all visual components)
+- [ ] 01-03-PLAN.md — Claude Vision API route and menu extraction pipeline
+- [ ] 01-04-PLAN.md — Page integration, unit tests, and visual verification
 
 ### Phase 2: Voice Interface
 **Goal**: User can speak and hear natural voice responses through a reliable, non-conflicting voice loop
@@ -97,7 +103,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Menu Capture | 0/TBD | Not started | - |
+| 1. Foundation & Menu Capture | 0/4 | Planning complete | - |
 | 2. Voice Interface | 0/TBD | Not started | - |
 | 3. Menu Exploration via Voice | 0/TBD | Not started | - |
 | 4. Smart Conversation & Decision Support | 0/TBD | Not started | - |
