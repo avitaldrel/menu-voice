@@ -9,8 +9,10 @@ import {
 import { SpeechManager, isSpeechRecognitionSupported } from '@/lib/speech-recognition';
 import { TTSClient } from '@/lib/tts-client';
 import { startThinkingChime, stopThinkingChime } from '@/lib/thinking-chime';
+import { ChatMessage, OVERVIEW_USER_MESSAGE } from '@/lib/chat-prompt';
+import type { Menu } from '@/lib/menu-schema';
 
-export function useVoiceLoop(): {
+export function useVoiceLoop(menu: Menu | null): {
   voiceState: VoiceState;
   startListening: () => void;
   stopListening: () => void;
@@ -20,6 +22,8 @@ export function useVoiceLoop(): {
   dismissPermissionPrompt: () => void;
   transcript: string;
   response: string;
+  triggerOverview: () => void;
+  conversationMessages: ChatMessage[];
 } {
   const [voiceState, dispatch] = useReducer(voiceReducer, initialVoiceState);
   const [needsPermissionPrompt, setNeedsPermissionPrompt] = useState(true);
@@ -34,6 +38,19 @@ export function useVoiceLoop(): {
   // Ref to hold accumulated response text for TranscriptDisplay
   const responseRef = useRef<string>('');
   const [responseText, setResponseText] = useState('');
+
+  // Conversation history — useRef for stable identity across renders (Pitfall 1)
+  const messagesRef = useRef<ChatMessage[]>([]);
+  const [conversationMessages, setConversationMessages] = useState<ChatMessage[]>([]);
+
+  // Keep menuRef in sync with the menu prop
+  const menuRef = useRef<Menu | null>(null);
+  useEffect(() => {
+    menuRef.current = menu;
+  }, [menu]);
+
+  // AbortController for cancelling in-flight fetch requests
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // isSupported is stable — evaluated once (SSR safe)
   const isSupported = isSpeechRecognitionSupported();
@@ -50,19 +67,85 @@ export function useVoiceLoop(): {
     voiceState.status === 'speaking' ? voiceState.response : responseText;
 
   /**
-   * Trigger TTS response with the given transcript.
-   * Phase 2 placeholder: plays a simple echo response.
-   * Phase 3 will replace this with actual Claude API streaming.
+   * Trigger streaming Claude chat response.
+   * userText: the user's speech input, or null for the overview call (messages already primed).
+   * Aborts any previous in-flight request before starting a new one.
    */
-  const triggerResponse = useCallback((text: string) => {
-    if (!ttsClientRef.current) return;
+  const triggerResponse = useCallback(async (userText: string | null) => {
+    // Abort any in-flight request
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
-    const placeholderResponse = `I heard you say: ${text}. Menu conversation will be available in the next update.`;
-    responseRef.current = placeholderResponse;
-    setResponseText(placeholderResponse);
-    ttsClientRef.current.queueText(placeholderResponse);
-    ttsClientRef.current.flush();
+    // Build the message list for this request
+    const nextMessages: ChatMessage[] =
+      userText !== null
+        ? [...messagesRef.current, { role: 'user', content: userText }]
+        : [...messagesRef.current]; // overview: already primed
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: nextMessages, menu: menuRef.current }),
+        signal: controller.signal,
+      });
+
+      if (!res.ok || !res.body) {
+        dispatch({ type: 'ERROR', message: 'Failed to get response' });
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullResponse = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        fullResponse += chunk;
+        ttsClientRef.current?.queueText(chunk);
+      }
+
+      ttsClientRef.current?.flush();
+
+      // Update response display
+      responseRef.current = fullResponse;
+      setResponseText(fullResponse);
+
+      // Persist assistant turn to conversation history
+      const updatedMessages: ChatMessage[] = [
+        ...nextMessages,
+        { role: 'assistant', content: fullResponse },
+      ];
+      messagesRef.current = updatedMessages;
+      setConversationMessages([...updatedMessages]);
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        // Intentional cancel — silent
+        return;
+      }
+      dispatch({ type: 'ERROR', message: 'Conversation error' });
+    }
   }, []);
+
+  /**
+   * Trigger the proactive menu overview.
+   * Primes the messages array with the overview request, then calls the chat API.
+   * No-op if menu is not yet available.
+   */
+  const triggerOverview = useCallback(() => {
+    if (!menuRef.current) return;
+    // Prime the messages array with the overview request
+    const overviewMessages: ChatMessage[] = [{ role: 'user', content: OVERVIEW_USER_MESSAGE }];
+    messagesRef.current = overviewMessages;
+    setConversationMessages([...overviewMessages]);
+    // Dispatch processing state with empty transcript (overview has no user speech)
+    dispatch({ type: 'SPEECH_RESULT', transcript: '' });
+    // Trigger the chat API call (null = overview mode, messages already primed)
+    triggerResponse(null);
+  }, [triggerResponse]);
 
   /**
    * Lazily create SpeechManager and TTSClient on first use.
@@ -118,18 +201,19 @@ export function useVoiceLoop(): {
   }, [ensureInstances]);
 
   /**
-   * Stop listening. Stops speech manager, TTS, and chime.
+   * Stop listening. Stops speech manager, TTS, chime, and aborts in-flight chat requests.
    */
   const stopListening = useCallback(() => {
     dispatch({ type: 'STOP' });
     speechManagerRef.current?.stop();
     ttsClientRef.current?.stop();
+    abortControllerRef.current?.abort();
     stopThinkingChime();
   }, []);
 
   /**
    * Handle text input (Firefox fallback path).
-   * Dispatches SPEECH_RESULT and triggers TTS response.
+   * Dispatches SPEECH_RESULT and triggers streaming TTS response.
    */
   const handleTextInput = useCallback((text: string) => {
     ensureInstances();
@@ -182,7 +266,7 @@ export function useVoiceLoop(): {
   }, [voiceState.status]);
 
   /**
-   * Cleanup on unmount — destroy instances and stop chime.
+   * Cleanup on unmount — destroy instances, abort in-flight request, stop chime.
    */
   useEffect(() => {
     return () => {
@@ -190,6 +274,7 @@ export function useVoiceLoop(): {
       speechManagerRef.current = null;
       ttsClientRef.current?.destroy();
       ttsClientRef.current = null;
+      abortControllerRef.current?.abort();
       stopThinkingChime();
     };
   }, []);
@@ -204,5 +289,7 @@ export function useVoiceLoop(): {
     dismissPermissionPrompt,
     transcript,
     response,
+    triggerOverview,
+    conversationMessages,
   };
 }

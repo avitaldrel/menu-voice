@@ -114,6 +114,62 @@ vi.mock('@/lib/thinking-chime', () => ({
 }));
 
 import { useVoiceLoop } from '@/hooks/useVoiceLoop';
+import { OVERVIEW_USER_MESSAGE } from '@/lib/chat-prompt';
+import type { Menu } from '@/lib/menu-schema';
+
+// ─── Helpers ────────────────────────────────────────────────────────────────
+
+/** Build a minimal ReadableStream that emits the given chunks then closes. */
+function makeReadableStream(chunks: string[]): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  let index = 0;
+  return new ReadableStream<Uint8Array>({
+    pull(controller) {
+      if (index < chunks.length) {
+        controller.enqueue(encoder.encode(chunks[index++]));
+      } else {
+        controller.close();
+      }
+    },
+  });
+}
+
+/** Return a resolved fetch mock for the given text chunks. */
+function makeFetchMock(chunks: string[]): ReturnType<typeof vi.fn> {
+  return vi.fn().mockResolvedValue({
+    ok: true,
+    body: makeReadableStream(chunks),
+  });
+}
+
+// ─── Test fixture ────────────────────────────────────────────────────────────
+
+const testMenu: Menu = {
+  restaurantName: 'Test Bistro',
+  menuType: 'dinner',
+  categories: [
+    {
+      name: 'Pasta',
+      description: null,
+      items: [
+        {
+          name: 'Spaghetti Carbonara',
+          description: 'Classic Roman pasta',
+          price: '$18',
+          allergens: ['dairy', 'eggs'],
+          dietaryFlags: [],
+          modifications: null,
+          portionSize: null,
+          confidence: 0.95,
+        },
+      ],
+    },
+  ],
+  extractionConfidence: 0.9,
+  warnings: [],
+};
+
+// ─── Tests ───────────────────────────────────────────────────────────────────
 
 describe('useVoiceLoop', () => {
   beforeEach(() => {
@@ -127,7 +183,7 @@ describe('useVoiceLoop', () => {
 
   // Test 1: Initial state
   it('returns initial idle state', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
     expect(result.current.voiceState.status).toBe('idle');
     expect(result.current.transcript).toBe('');
     expect(result.current.response).toBe('');
@@ -136,20 +192,20 @@ describe('useVoiceLoop', () => {
   // Test 2: isSupported returns true when SpeechRecognition mock is present
   it('isSupported returns true when SpeechRecognition mock is present', () => {
     mockIsSupported.value = true;
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
     expect(result.current.isSupported).toBe(true);
   });
 
   // Test 3: isSupported returns false when not supported
   it('isSupported returns false when SpeechRecognition is not supported', () => {
     mockIsSupported.value = false;
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
     expect(result.current.isSupported).toBe(false);
   });
 
   // Test 4: startListening dispatches START_LISTENING (transitions to listening)
   it('startListening dispatches START_LISTENING', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
     expect(result.current.voiceState.status).toBe('idle');
 
     act(() => {
@@ -162,7 +218,7 @@ describe('useVoiceLoop', () => {
 
   // Test 5: stopListening dispatches STOP (transitions to idle)
   it('stopListening dispatches STOP', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
       result.current.startListening();
@@ -178,8 +234,9 @@ describe('useVoiceLoop', () => {
   });
 
   // Test 6: handleTextInput dispatches SPEECH_RESULT
-  it('handleTextInput dispatches SPEECH_RESULT transitioning to processing', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+  it('handleTextInput dispatches SPEECH_RESULT transitioning to processing', async () => {
+    global.fetch = makeFetchMock(['response text']);
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
       result.current.startListening();
@@ -187,7 +244,7 @@ describe('useVoiceLoop', () => {
 
     expect(result.current.voiceState.status).toBe('listening');
 
-    act(() => {
+    await act(async () => {
       result.current.handleTextInput('What are the vegetarian options?');
     });
 
@@ -196,14 +253,15 @@ describe('useVoiceLoop', () => {
   });
 
   // Test 7: thinking chime starts on processing state
-  it('starts thinking chime when entering processing state', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+  it('starts thinking chime when entering processing state', async () => {
+    global.fetch = makeFetchMock(['test response']);
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
       result.current.startListening();
     });
 
-    act(() => {
+    await act(async () => {
       result.current.handleTextInput('Test question');
     });
 
@@ -212,14 +270,15 @@ describe('useVoiceLoop', () => {
   });
 
   // Test 8: thinking chime stops on non-processing state
-  it('stops thinking chime when leaving processing state', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+  it('stops thinking chime when leaving processing state', async () => {
+    global.fetch = makeFetchMock(['test response']);
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
       result.current.startListening();
     });
 
-    act(() => {
+    await act(async () => {
       result.current.handleTextInput('Test question');
     });
 
@@ -237,8 +296,9 @@ describe('useVoiceLoop', () => {
   });
 
   // Test 9: onTranscript callback transitions state to processing
-  it('SpeechManager onTranscript transitions state to processing', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+  it('SpeechManager onTranscript transitions state to processing', async () => {
+    global.fetch = makeFetchMock(['specials response']);
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
       result.current.startListening();
@@ -247,7 +307,7 @@ describe('useVoiceLoop', () => {
     const { onTranscript } = getCapturedCallbacks();
     expect(onTranscript).not.toBeNull();
 
-    act(() => {
+    await act(async () => {
       onTranscript!('What are the specials today?');
     });
 
@@ -257,7 +317,7 @@ describe('useVoiceLoop', () => {
 
   // Test 10: onError callback transitions state to error
   it('SpeechManager onError transitions state to error', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
       result.current.startListening();
@@ -275,13 +335,13 @@ describe('useVoiceLoop', () => {
 
   // Test 11: needsPermissionPrompt starts true
   it('needsPermissionPrompt starts true', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
     expect(result.current.needsPermissionPrompt).toBe(true);
   });
 
   // Test 12: dismissPermissionPrompt sets needsPermissionPrompt to false
   it('dismissPermissionPrompt sets needsPermissionPrompt to false', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
     expect(result.current.needsPermissionPrompt).toBe(true);
 
     act(() => {
@@ -293,7 +353,7 @@ describe('useVoiceLoop', () => {
 
   // Test 13: startListening sets needsPermissionPrompt to false
   it('startListening sets needsPermissionPrompt to false', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
     expect(result.current.needsPermissionPrompt).toBe(true);
 
     act(() => {
@@ -304,14 +364,15 @@ describe('useVoiceLoop', () => {
   });
 
   // Test 14: PLAYBACK_ENDED auto-restarts listening
-  it('PLAYBACK_ENDED (via TTS onSpeakingEnd) auto-restarts to listening', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+  it('PLAYBACK_ENDED (via TTS onSpeakingEnd) auto-restarts to listening', async () => {
+    global.fetch = makeFetchMock(['some answer']);
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
       result.current.startListening();
     });
 
-    act(() => {
+    await act(async () => {
       result.current.handleTextInput('Some question');
     });
 
@@ -335,7 +396,7 @@ describe('useVoiceLoop', () => {
 
   // Test 15: No double-start on initial idle->listening transition
   it('does not double-call speechManager.start() on initial startListening', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     act(() => {
       result.current.startListening();
@@ -347,8 +408,9 @@ describe('useVoiceLoop', () => {
   });
 
   // Test 16: Full voice loop cycle — start, speak, process, play, auto-restart
-  it('completes full voice loop cycle with auto-restart calling start() twice', () => {
-    const { result } = renderHook(() => useVoiceLoop());
+  it('completes full voice loop cycle with auto-restart calling start() twice', async () => {
+    global.fetch = makeFetchMock(['We have tiramisu and gelato.']);
+    const { result } = renderHook(() => useVoiceLoop(null));
 
     // 1. User starts listening
     act(() => {
@@ -358,7 +420,7 @@ describe('useVoiceLoop', () => {
     expect(mockSpeechManagerStart).toHaveBeenCalledTimes(1);
 
     // 2. User speaks -> processing
-    act(() => {
+    await act(async () => {
       result.current.handleTextInput('What desserts do you have?');
     });
     expect(result.current.voiceState.status).toBe('processing');
@@ -376,5 +438,194 @@ describe('useVoiceLoop', () => {
     expect(result.current.voiceState.status).toBe('listening');
     // start() called a 2nd time by auto-restart useEffect
     expect(mockSpeechManagerStart).toHaveBeenCalledTimes(2);
+  });
+
+  // ─── New tests for streaming Claude chat ──────────────────────────────────
+
+  // Test 17: triggerResponse sends fetch to /api/chat with correct body
+  it('handleTextInput sends fetch to /api/chat with correct body', async () => {
+    const fetchMock = makeFetchMock(['pasta response']);
+    global.fetch = fetchMock;
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    await act(async () => {
+      result.current.handleTextInput('What pasta do you have?');
+    });
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [url, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe('/api/chat');
+    expect(options.method).toBe('POST');
+    const body = JSON.parse(options.body as string) as {
+      messages: Array<{ role: string; content: string }>;
+      menu: Menu;
+    };
+    expect(body.messages).toEqual([
+      { role: 'user', content: 'What pasta do you have?' },
+    ]);
+    expect(body.menu).toEqual(testMenu);
+  });
+
+  // Test 18: streaming response feeds into TTSClient
+  it('streaming response feeds chunks into TTSClient and flushes', async () => {
+    global.fetch = makeFetchMock(['Spaghetti ', 'Carbonara.']);
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    await act(async () => {
+      result.current.handleTextInput('What pasta do you have?');
+    });
+
+    expect(mockTTSQueueText).toHaveBeenCalledWith('Spaghetti ');
+    expect(mockTTSQueueText).toHaveBeenCalledWith('Carbonara.');
+    expect(mockTTSFlush).toHaveBeenCalledOnce();
+  });
+
+  // Test 19: conversation history accumulates across turns
+  it('conversation history accumulates across turns', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce({ ok: true, body: makeReadableStream(['First answer.']) })
+      .mockResolvedValueOnce({ ok: true, body: makeReadableStream(['Second answer.']) });
+    global.fetch = fetchMock;
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    // First turn
+    await act(async () => {
+      result.current.handleTextInput('Question one');
+    });
+
+    // Second turn — check that the second fetch includes full history
+    await act(async () => {
+      result.current.handleTextInput('Question two');
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const [, secondOptions] = fetchMock.mock.calls[1] as [string, RequestInit];
+    const secondBody = JSON.parse(secondOptions.body as string) as {
+      messages: Array<{ role: string; content: string }>;
+    };
+    // Second call should include: user1, assistant1, user2
+    expect(secondBody.messages).toEqual([
+      { role: 'user', content: 'Question one' },
+      { role: 'assistant', content: 'First answer.' },
+      { role: 'user', content: 'Question two' },
+    ]);
+  });
+
+  // Test 20: triggerOverview primes messages with OVERVIEW_USER_MESSAGE
+  it('triggerOverview primes messages with OVERVIEW_USER_MESSAGE and calls /api/chat', async () => {
+    const fetchMock = makeFetchMock(['This is a dinner bistro with 3 categories.']);
+    global.fetch = fetchMock;
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    await act(async () => {
+      result.current.triggerOverview();
+    });
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [url, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe('/api/chat');
+    const body = JSON.parse(options.body as string) as {
+      messages: Array<{ role: string; content: string }>;
+    };
+    expect(body.messages).toEqual([
+      { role: 'user', content: OVERVIEW_USER_MESSAGE },
+    ]);
+  });
+
+  // Test 21: triggerOverview is a no-op when menu is null
+  it('triggerOverview is a no-op when menu is null', async () => {
+    const fetchMock = vi.fn();
+    global.fetch = fetchMock;
+
+    const { result } = renderHook(() => useVoiceLoop(null));
+
+    await act(async () => {
+      result.current.triggerOverview();
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  // Test 22: AbortController cancels previous in-flight request
+  it('starting a new request aborts the previous in-flight request', async () => {
+    // Track abort calls across controller instances
+    const abortCalls: boolean[] = [];
+    let callCount = 0;
+
+    // Must use function constructor (not arrow) for mock constructors — vitest requirement
+    vi.stubGlobal('AbortController', vi.fn(function (this: Record<string, unknown>) {
+      const myIndex = callCount++;
+      abortCalls.push(false);
+      this.signal = { aborted: false };
+      this.abort = vi.fn(() => {
+        abortCalls[myIndex] = true;
+      });
+    }));
+
+    const fetchMock = vi.fn()
+      .mockReturnValueOnce(new Promise(() => { /* first request hangs */ }))
+      .mockResolvedValueOnce({ ok: true, body: makeReadableStream(['quick answer']) });
+    global.fetch = fetchMock;
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    // Start first request (hangs)
+    act(() => {
+      result.current.handleTextInput('First question');
+    });
+
+    // Immediately start second request — should abort the first controller
+    await act(async () => {
+      result.current.handleTextInput('Second question');
+    });
+
+    // abortCalls[0] should be true — first controller was aborted when second request started
+    expect(abortCalls[0]).toBe(true);
+
+    vi.unstubAllGlobals();
+  });
+
+  // Test 23: fetch error dispatches error state
+  it('fetch failure dispatches ERROR state', async () => {
+    global.fetch = vi.fn().mockResolvedValue({ ok: false, body: null });
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    await act(async () => {
+      result.current.handleTextInput('Test question');
+    });
+
+    expect(result.current.voiceState.status).toBe('error');
+  });
+
+  // Test 24: conversationMessages is exposed in return value
+  it('exposes conversationMessages in return value', () => {
+    const { result } = renderHook(() => useVoiceLoop(null));
+    expect(Array.isArray(result.current.conversationMessages)).toBe(true);
+    expect(result.current.conversationMessages).toHaveLength(0);
   });
 });
