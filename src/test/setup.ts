@@ -17,7 +17,7 @@ export const mockRecognitionInstance = {
   maxAlternatives: 1,
 };
 
-const MockSpeechRecognition = vi.fn(() => mockRecognitionInstance);
+const MockSpeechRecognition = vi.fn(function () { return mockRecognitionInstance; });
 
 Object.defineProperty(window, 'SpeechRecognition', {
   writable: true,
