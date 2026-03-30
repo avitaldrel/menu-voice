@@ -12,11 +12,11 @@ A blind person can independently understand and choose from any restaurant menu 
 - [x] Capture photos of restaurant menu pages (multiple pages supported) — Validated in Phase 1: Foundation & Menu Capture
 - [x] Process menu photos via AI vision into structured menu data — Validated in Phase 1: Foundation & Menu Capture
 - [x] Screen reader and keyboard accessible (foundation) — Validated in Phase 1: Foundation & Menu Capture
+- [x] Fully voice-controlled interface (speech recognition + text-to-speech) — Validated in Phase 2: Voice Interface
+- [x] Natural AI voice output with browser TTS fallback — Validated in Phase 2: Voice Interface
 
 ### Active
 - [ ] Guide user to retake photos when text is unreadable
-- [ ] Fully voice-controlled interface (speech recognition + text-to-speech)
-- [ ] Natural AI voice output with browser TTS fallback
 - [ ] Proactive restaurant/menu overview after processing photos
 - [ ] Conversational menu exploration (categories, items, ingredients, prices)
 - [ ] User profile with allergies and food preferences (stored locally)
@@ -85,7 +85,7 @@ A blind person can independently understand and choose from any restaurant menu 
 - Track decision outcomes as phases reveal what works
 
 ## Current State
-Phase 1 complete — Next.js 16 app with camera capture, Claude Vision menu extraction, accessible UI (39 tests passing). Ready for Phase 2: Voice Interface.
+Phase 2 complete — Voice interface with state machine, Web Speech API recognition, OpenAI TTS via audio element (with browser SpeechSynthesis fallback), thinking chime, and auto-restart after speaking. 157 tests passing across 16 files. Human testing pending for end-to-end voice loop, TTS fallback, Firefox, and VoiceOver. Ready for Phase 3: Menu Exploration via Voice.
 
 ## Last Updated
-2026-03-30 (after Phase 1 completion)
+2026-03-30 (after Phase 2 completion)
