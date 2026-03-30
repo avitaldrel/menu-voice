@@ -14,11 +14,11 @@ A blind person can independently understand and choose from any restaurant menu 
 - [x] Screen reader and keyboard accessible (foundation) — Validated in Phase 1: Foundation & Menu Capture
 - [x] Fully voice-controlled interface (speech recognition + text-to-speech) — Validated in Phase 2: Voice Interface
 - [x] Natural AI voice output with browser TTS fallback — Validated in Phase 2: Voice Interface
+- [x] Proactive restaurant/menu overview after processing photos — Validated in Phase 3: Menu Exploration via Voice
+- [x] Conversational menu exploration (categories, items, ingredients, prices) — Validated in Phase 3: Menu Exploration via Voice
 
 ### Active
 - [ ] Guide user to retake photos when text is unreadable
-- [ ] Proactive restaurant/menu overview after processing photos
-- [ ] Conversational menu exploration (categories, items, ingredients, prices)
 - [ ] User profile with allergies and food preferences (stored locally)
 - [ ] In-conversation allergy/dislike capture (even without prior profile setup)
 - [ ] Proactive allergy/preference warnings on every mentioned item
@@ -85,7 +85,7 @@ A blind person can independently understand and choose from any restaurant menu 
 - Track decision outcomes as phases reveal what works
 
 ## Current State
-Phase 2 complete — Voice interface with state machine, Web Speech API recognition, OpenAI TTS via audio element (with browser SpeechSynthesis fallback), thinking chime, and auto-restart after speaking. 157 tests passing across 16 files. Human testing pending for end-to-end voice loop, TTS fallback, Firefox, and VoiceOver. Ready for Phase 3: Menu Exploration via Voice.
+Phase 3 complete — Streaming Claude chat API with full menu JSON in system prompt, voice loop wired to real conversation, proactive menu overview auto-triggers after photo processing. 181 tests passing across 18 files. Human testing pending for end-to-end voice conversation flow. Ready for Phase 4: Smart Conversation & Decision Support.
 
 ## Last Updated
-2026-03-30 (after Phase 2 completion)
+2026-03-30 (after Phase 3 completion)
