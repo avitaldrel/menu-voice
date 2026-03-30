@@ -9,11 +9,11 @@ A blind person can independently understand and choose from any restaurant menu 
 ## Requirements
 
 ### Validated
-_(none yet)_
+- [x] Capture photos of restaurant menu pages (multiple pages supported) — Validated in Phase 1: Foundation & Menu Capture
+- [x] Process menu photos via AI vision into structured menu data — Validated in Phase 1: Foundation & Menu Capture
+- [x] Screen reader and keyboard accessible (foundation) — Validated in Phase 1: Foundation & Menu Capture
 
 ### Active
-- [ ] Capture photos of restaurant menu pages (multiple pages supported)
-- [ ] Process menu photos via AI vision into structured menu data
 - [ ] Guide user to retake photos when text is unreadable
 - [ ] Fully voice-controlled interface (speech recognition + text-to-speech)
 - [ ] Natural AI voice output with browser TTS fallback
@@ -24,7 +24,7 @@ _(none yet)_
 - [ ] Proactive allergy/preference warnings on every mentioned item
 - [ ] Suggest asking server about allergen-free modifications
 - [ ] Help user decide what to order through natural conversation
-- [ ] Screen reader and keyboard accessible
+- [ ] Screen reader and keyboard accessible (full hardening)
 
 ### Out of Scope
 - Native mobile app (deferred to future milestone)
@@ -84,5 +84,8 @@ _(none yet)_
 - Move requirements to Validated once shipped and confirmed working
 - Track decision outcomes as phases reveal what works
 
+## Current State
+Phase 1 complete — Next.js 16 app with camera capture, Claude Vision menu extraction, accessible UI (39 tests passing). Ready for Phase 2: Voice Interface.
+
 ## Last Updated
-Initial creation during project setup (v1.0 milestone)
+2026-03-30 (after Phase 1 completion)
