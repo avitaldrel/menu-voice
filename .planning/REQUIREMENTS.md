@@ -10,7 +10,7 @@
 ### Menu Capture & Processing (MENU)
 - [ ] **MENU-01**: User can take photos of restaurant menu pages using device camera
 - [ ] **MENU-02**: User can capture multiple menu pages in a single session
-- [ ] **MENU-03**: App processes menu photos into structured menu data (categories, items, descriptions, prices) via AI vision
+- [x] **MENU-03**: App processes menu photos into structured menu data (categories, items, descriptions, prices) via AI vision
 - [ ] **MENU-04**: App detects when a photo is unreadable and voice-guides user to retake it
 - [ ] **MENU-05**: App presents a proactive spoken overview of the restaurant type and menu categories after processing
 
@@ -41,7 +41,7 @@
 ### Accessibility (A11Y)
 - [ ] **A11Y-01**: All functionality accessible via voice alone — no visual interaction required
 - [ ] **A11Y-02**: ARIA live regions announce app state changes to screen readers
-- [ ] **A11Y-03**: High-contrast, large touch targets for any visual UI elements
+- [x] **A11Y-03**: High-contrast, large touch targets for any visual UI elements
 - [ ] **A11Y-04**: Keyboard navigable for users with partial vision
 - [ ] **A11Y-05**: TTS output uses `<audio>` element to avoid conflict with active screen readers
 - [ ] **A11Y-06**: App announces its state clearly (listening, thinking, speaking, error)
@@ -80,7 +80,7 @@
 |---|---|---|
 | MENU-01 | Phase 1 | Pending |
 | MENU-02 | Phase 1 | Pending |
-| MENU-03 | Phase 1 | Pending |
+| MENU-03 | Phase 1 | Complete |
 | MENU-04 | Phase 6 | Pending |
 | MENU-05 | Phase 3 | Pending |
 | VOICE-01 | Phase 2 | Pending |
@@ -103,7 +103,7 @@
 | ALLERGY-06 | Phase 5 | Pending |
 | A11Y-01 | Phase 6 | Pending |
 | A11Y-02 | Phase 6 | Pending |
-| A11Y-03 | Phase 1 | Pending |
+| A11Y-03 | Phase 1 | Complete |
 | A11Y-04 | Phase 1 | Pending |
 | A11Y-05 | Phase 2 | Pending |
 | A11Y-06 | Phase 2 | Pending |

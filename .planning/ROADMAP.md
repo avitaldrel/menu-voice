@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **UI hint**: yes
 
 Plans:
-- [ ] 01-01-PLAN.md — Project scaffolding, types, utilities, test infrastructure
+- [x] 01-01-PLAN.md — Project scaffolding, types, utilities, test infrastructure
 - [ ] 01-02-PLAN.md — App shell and UI components (layout, header, all visual components)
 - [ ] 01-03-PLAN.md — Claude Vision API route and menu extraction pipeline
 - [ ] 01-04-PLAN.md — Page integration, unit tests, and visual verification
@@ -103,7 +103,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Menu Capture | 0/4 | Planning complete | - |
+| 1. Foundation & Menu Capture | 1/4 | In Progress|  |
 | 2. Voice Interface | 0/TBD | Not started | - |
 | 3. Menu Exploration via Voice | 0/TBD | Not started | - |
 | 4. Smart Conversation & Decision Support | 0/TBD | Not started | - |
