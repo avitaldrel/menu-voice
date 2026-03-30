@@ -15,12 +15,12 @@
 - [ ] **MENU-05**: App presents a proactive spoken overview of the restaurant type and menu categories after processing
 
 ### Voice Interface (VOICE)
-- [ ] **VOICE-01**: User can speak commands and questions using speech recognition
+- [x] **VOICE-01**: User can speak commands and questions using speech recognition
 - [x] **VOICE-02**: App responds with natural AI-generated voice via `<audio>` element (not SpeechSynthesis, to avoid screen reader conflict)
-- [ ] **VOICE-03**: App falls back to browser SpeechSynthesis when AI TTS is unavailable
+- [x] **VOICE-03**: App falls back to browser SpeechSynthesis when AI TTS is unavailable
 - [x] **VOICE-04**: Voice loop uses strict state machine — listening OR speaking, never both
-- [ ] **VOICE-05**: App provides audio feedback during processing ("thinking" cue) so user knows it's working
-- [ ] **VOICE-06**: Speech recognition auto-restarts after silence/completion for continuous conversation
+- [x] **VOICE-05**: App provides audio feedback during processing ("thinking" cue) so user knows it's working
+- [x] **VOICE-06**: Speech recognition auto-restarts after silence/completion for continuous conversation
 
 ### Conversational Exploration (CONV)
 - [ ] **CONV-01**: User can ask about menu categories ("What pasta do you have?")
@@ -83,12 +83,12 @@
 | MENU-03 | Phase 1 | Complete |
 | MENU-04 | Phase 6 | Pending |
 | MENU-05 | Phase 3 | Pending |
-| VOICE-01 | Phase 2 | Pending |
+| VOICE-01 | Phase 2 | Complete |
 | VOICE-02 | Phase 2 | Complete |
-| VOICE-03 | Phase 2 | Pending |
+| VOICE-03 | Phase 2 | Complete |
 | VOICE-04 | Phase 2 | Complete |
-| VOICE-05 | Phase 2 | Pending |
-| VOICE-06 | Phase 2 | Pending |
+| VOICE-05 | Phase 2 | Complete |
+| VOICE-06 | Phase 2 | Complete |
 | CONV-01 | Phase 3 | Pending |
 | CONV-02 | Phase 3 | Pending |
 | CONV-03 | Phase 4 | Pending |

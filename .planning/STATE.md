@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-voice-interface/02-03-PLAN.md
-last_updated: "2026-03-30T18:23:19.954Z"
+stopped_at: Completed 02-voice-interface/02-02-PLAN.md
+last_updated: "2026-03-30T18:23:42.883Z"
 last_activity: 2026-03-30
 progress:
   total_phases: 6
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation-menu-capture P04 | 3 | 2 tasks | 9 files |
 | Phase 02-voice-interface P01 | 6 | 2 tasks | 8 files |
 | Phase 02-voice-interface P03 | 15 | 2 tasks | 8 files |
+| Phase 02-voice-interface P02 | 16 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,9 @@ Recent decisions affecting current work:
 - [Phase 02-voice-interface]: VoiceStateIndicator renders sr-only ARIA live region always in DOM plus visible label — content change triggers screen reader announcements
 - [Phase 02-voice-interface]: Speaking visual cue uses inline animationDelay for 3-dot bounce stagger — Tailwind lacks stagger utilities
 - [Phase 02-voice-interface]: TranscriptDisplay returns null when both props empty — prevents empty container from appearing before conversation starts
+- [Phase 02-voice-interface]: vi.fn(function(){}) not arrow function for mock constructors — arrow functions cannot be new-called in vitest
+- [Phase 02-voice-interface]: SpeechSynthesisUtterance mock required in setup.ts for jsdom TTS fallback tests
+- [Phase 02-voice-interface]: AudioContext cached at module level in thinking-chime — lazy creation after user gesture per autoplay policy
 
 ### Pending Todos
 
@@ -99,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T18:23:06.418Z
-Stopped at: Completed 02-voice-interface/02-03-PLAN.md
+Last session: 2026-03-30T18:23:42.865Z
+Stopped at: Completed 02-voice-interface/02-02-PLAN.md
 Resume file: None
