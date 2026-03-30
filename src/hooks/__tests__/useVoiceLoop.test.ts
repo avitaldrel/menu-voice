@@ -328,5 +328,53 @@ describe('useVoiceLoop', () => {
     });
 
     expect(result.current.voiceState.status).toBe('listening');
+    // Verify speechManager.start() was called twice:
+    // 1st from startListening(), 2nd from auto-restart useEffect
+    expect(mockSpeechManagerStart).toHaveBeenCalledTimes(2);
+  });
+
+  // Test 15: No double-start on initial idle->listening transition
+  it('does not double-call speechManager.start() on initial startListening', () => {
+    const { result } = renderHook(() => useVoiceLoop());
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    expect(result.current.voiceState.status).toBe('listening');
+    // startListening() calls start() once; the useEffect must NOT add a second call
+    expect(mockSpeechManagerStart).toHaveBeenCalledTimes(1);
+  });
+
+  // Test 16: Full voice loop cycle — start, speak, process, play, auto-restart
+  it('completes full voice loop cycle with auto-restart calling start() twice', () => {
+    const { result } = renderHook(() => useVoiceLoop());
+
+    // 1. User starts listening
+    act(() => {
+      result.current.startListening();
+    });
+    expect(result.current.voiceState.status).toBe('listening');
+    expect(mockSpeechManagerStart).toHaveBeenCalledTimes(1);
+
+    // 2. User speaks -> processing
+    act(() => {
+      result.current.handleTextInput('What desserts do you have?');
+    });
+    expect(result.current.voiceState.status).toBe('processing');
+
+    // 3. TTS starts playing -> speaking
+    act(() => {
+      getCapturedTTSOptions().onSpeakingStart?.();
+    });
+    expect(result.current.voiceState.status).toBe('speaking');
+
+    // 4. TTS finishes -> PLAYBACK_ENDED -> auto-restart listening
+    act(() => {
+      getCapturedTTSOptions().onSpeakingEnd?.();
+    });
+    expect(result.current.voiceState.status).toBe('listening');
+    // start() called a 2nd time by auto-restart useEffect
+    expect(mockSpeechManagerStart).toHaveBeenCalledTimes(2);
   });
 });
