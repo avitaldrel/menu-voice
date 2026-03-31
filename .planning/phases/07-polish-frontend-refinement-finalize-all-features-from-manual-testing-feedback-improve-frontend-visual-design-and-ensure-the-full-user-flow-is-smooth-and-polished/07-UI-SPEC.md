@@ -58,10 +58,10 @@ Exceptions:
 | Body | 16px | 400 (regular) | 1.5 | TranscriptDisplay text, category item descriptions, guidance copy |
 | Label | 14px | 400 (regular) | 1.4 | Metadata (item count, menu type label, status indicator text) |
 | Heading | 24px | 600 (semibold) | 1.2 | Restaurant name (MenuSummary h2), category headers, state headings |
-| Display | 32px | 700 (bold) | 1.1 | Welcome "Start" button label, hero action labels |
+| Display | 32px | 600 (semibold) | 1.1 | Welcome "Scan My Menu" button label, hero action labels |
 
 **Constraints:**
-- Exactly 2 weights: 400 (regular) and 600/700 (semibold/bold). Bold (700) is reserved for the single hero CTA per screen only (D-04 one hero action per screen).
+- Exactly 2 weights: 400 (regular) and 600 (semibold). Visual differentiation between Heading and Display roles is achieved through size (24px vs 32px), not weight variation.
 - Body size must stay at 16px minimum — accessibility requirement for low-vision users (A11Y-03).
 - No 12px or 13px text anywhere in the UI — smallest permitted size is 14px (label role).
 
@@ -113,7 +113,7 @@ Exceptions:
 **Accent reserved for (explicit list):**
 1. VoiceButton background in `idle` state — the one dominant interactive element on the results screen
 2. ScanButton background — the one dominant interactive element on the idle/welcome screen
-3. Welcome "Start" button background
+3. Welcome "Scan My Menu" button background
 4. Header "MenuVoice" logo teal portion (updates D-03 text logo to use accent teal on "Voice")
 5. Focus ring color on all focusable elements (replaces current `focus-visible:outline-black`)
 6. VoiceButton `listening` ring — replaces current `ring-blue-600` with `ring-accent`
@@ -132,12 +132,12 @@ Defer to v2. Phase 7 targets light mode only. The existing `@media (prefers-colo
 
 ## Component-Level Visual Contracts
 
-### Welcome Screen ("Start" button)
+### Welcome Screen ("Scan My Menu" button)
 
 - Background: `bg-accent` (teal)
 - Text: `text-accent-foreground` (white)
 - Size: `w-full max-w-md min-h-[200px]` — existing size preserved
-- Weight: 700 bold, 32px Display role
+- Weight: 600 semibold, 32px Display role
 - Active state: `active:bg-accent-hover` (darker teal, replaces `active:bg-gray-800`)
 - Border radius: `rounded-3xl` — existing, preserved
 - Source: CONTEXT.md D-04 one hero action; D-01 teal/sage accent
@@ -243,7 +243,7 @@ For transitions out of a state (before dispatch), delay the reducer action by 15
 user action → set opacity-0 → setTimeout 150ms → dispatch reducer action → new state mounts with fade-in
 ```
 
-Only applied to intentional user-initiated transitions (Start tap, Scan tap, Retry tap). Not applied to automatic transitions (extract success → results) — those use fade-in on arrival only.
+Only applied to intentional user-initiated transitions (Scan My Menu tap, Scan tap, Retry tap). Not applied to automatic transitions (extract success → results) — those use fade-in on arrival only.
 
 ### prefers-reduced-motion
 
@@ -276,7 +276,7 @@ This happens entirely within `TTSClient.stop()`. Does NOT use SpeechSynthesis (C
 
 | Element | Copy |
 |---------|------|
-| Primary CTA — Welcome | "Start" |
+| Primary CTA — Welcome | "Scan My Menu" |
 | Primary CTA — Idle (scan) | "Scan Menu" |
 | Primary CTA — Results (mic) | aria-label: "Tap to start listening" (existing, preserved) |
 | Secondary CTA — Scan New Menu | "Scan New Menu" |
@@ -339,7 +339,7 @@ Hints are appended to the overview TTS in `useVoiceLoop` (not added to system pr
 
 | App State | Hero Action | Secondary Actions | Subdued/Hidden |
 |-----------|-------------|-------------------|----------------|
-| `welcome` | "Start" button (accent, 200px tall) | — | Header settings gear (visible but small) |
+| `welcome` | "Scan My Menu" button (accent, 200px tall) | — | Header settings gear (visible but small) |
 | `idle` | "Scan Menu" button (accent, full-width) | — | Header settings gear |
 | `processing` | None (passive wait) | — | All buttons inactive |
 | `results` | VoiceButton (accent, 96px circle) | "Scan New Menu" (muted, small) | Menu accordion (visible but below voice interface) |
@@ -390,7 +390,7 @@ Derived from codebase scan + design decisions. Executor reference:
 | `src/components/TranscriptDisplay.tsx` | Update `bg-gray-50` → `bg-muted`, `text-gray-700` → `text-foreground`, `rounded-lg` → `rounded-xl` |
 | `src/components/RetakeGuidance.tsx` | Update guidance panel to `bg-warning-surface`; update proceed button to muted style; fix TTS to use TTSClient not raw Audio |
 | `src/components/ProcessingState.tsx` | Add cycling message logic with setInterval; visual display cycles, ARIA region stays static |
-| `src/app/page.tsx` | Wrap state panels in FadePanel; fix welcome TTS to use speakWelcome() via TTSClient; fix processing interval to use TTSClient; add "Scan New Menu" label to secondary ScanButton; add voice command routing |
+| `src/app/page.tsx` | Wrap state panels in FadePanel; fix welcome TTS to use speakWelcome() via TTSClient; fix processing interval to use TTSClient; add "Scan New Menu" label to secondary ScanButton; add voice command routing; update Welcome button label to "Scan My Menu" |
 | `src/lib/tts-client.ts` | Add `fadeAndStop()` for D-10 interrupt; replace instant `audio.pause()` in `stop()` |
 | `src/hooks/useVoiceLoop.ts` | Add voice command short-circuit; add hint logic with session count check |
 | `src/lib/indexeddb.ts` | Add `getAndIncrementSessionCount()` function |
