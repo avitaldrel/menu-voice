@@ -4,7 +4,7 @@ import type { Menu } from './menu-schema';
 const DB_NAME = 'menuvoice';
 const DB_VERSION = 1;
 
-function getDB() {
+export function getDB() {
   return openDB(DB_NAME, DB_VERSION, {
     upgrade(db) {
       const sessions = db.createObjectStore('sessions', {
@@ -39,4 +39,20 @@ export async function getRecentSessions(limit = 5): Promise<Session[]> {
 export async function clearSessions(): Promise<void> {
   const db = await getDB();
   await db.clear('sessions');
+}
+
+export interface UserProfile {
+  allergies: string[];
+  preferences: string[];
+  dislikes: string[];
+}
+
+export async function getProfile(): Promise<UserProfile | null> {
+  const db = await getDB();
+  return (await db.get('settings', 'profile')) ?? null;
+}
+
+export async function saveProfile(profile: UserProfile): Promise<void> {
+  const db = await getDB();
+  await db.put('settings', profile, 'profile');
 }
