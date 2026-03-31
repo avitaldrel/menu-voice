@@ -7,7 +7,7 @@ import type { AppAction } from '@/lib/app-state';
 import type { Menu } from '@/lib/menu-schema';
 
 export function useMenuExtraction(dispatch: React.Dispatch<AppAction>) {
-  const extract = useCallback(async (files: File[]) => {
+  const extract = useCallback(async (files: File[], attemptCount: number = 1) => {
     dispatch({ type: 'FILES_SELECTED', fileCount: files.length });
 
     try {
@@ -35,7 +35,28 @@ export function useMenuExtraction(dispatch: React.Dispatch<AppAction>) {
 
       const menu: Menu = await res.json();
 
-      // Step 3: Save to IndexedDB for the recent sessions list (D-18)
+      // Step 3: Quality detection — dispatch EXTRACTION_LOW_QUALITY for low-confidence or warned extractions
+      const isLowQuality = menu.extractionConfidence < 0.3 || menu.warnings.length > 0;
+      if (isLowQuality) {
+        const guidanceText = menu.warnings.length > 0
+          ? `${menu.warnings[0]} Please retake for a better result.`
+          : 'The photo was difficult to read clearly. Please try retaking in better lighting.';
+        dispatch({
+          type: 'EXTRACTION_LOW_QUALITY',
+          menu,
+          sessionId: await saveSession({
+            restaurantName: menu.restaurantName,
+            menuType: menu.menuType,
+            timestamp: Date.now(),
+            menu,
+          }),
+          guidance: guidanceText,
+          attemptCount,
+        });
+        return;
+      }
+
+      // Step 4: Save to IndexedDB for the recent sessions list (D-18)
       const sessionId = await saveSession({
         restaurantName: menu.restaurantName,
         menuType: menu.menuType,
@@ -43,7 +64,7 @@ export function useMenuExtraction(dispatch: React.Dispatch<AppAction>) {
         menu,
       });
 
-      // Step 4: Update app state to results
+      // Step 5: Update app state to results
       dispatch({ type: 'EXTRACTION_SUCCESS', menu, sessionId });
     } catch (err) {
       const message = err instanceof Error
