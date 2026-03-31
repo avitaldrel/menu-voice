@@ -25,9 +25,9 @@
 ### Conversational Exploration (CONV)
 - [x] **CONV-01**: User can ask about menu categories ("What pasta do you have?")
 - [x] **CONV-02**: User can ask about specific items — ingredients, preparation, description
-- [ ] **CONV-03**: User can ask for recommendations based on preferences ("Something light", "What's popular")
-- [ ] **CONV-04**: App maintains conversation context across multiple turns
-- [ ] **CONV-05**: App helps user narrow down choices and decide what to order
+- [x] **CONV-03**: User can ask for recommendations based on preferences ("Something light", "What's popular")
+- [x] **CONV-04**: App maintains conversation context across multiple turns
+- [x] **CONV-05**: App helps user narrow down choices and decide what to order
 - [x] **CONV-06**: App uses full extracted menu data in conversation context (no summarization)
 
 ### Allergy & Preference Management (ALLERGY)
@@ -91,9 +91,9 @@
 | VOICE-06 | Phase 2 | Complete |
 | CONV-01 | Phase 3 | Complete |
 | CONV-02 | Phase 3 | Complete |
-| CONV-03 | Phase 4 | Pending |
-| CONV-04 | Phase 4 | Pending |
-| CONV-05 | Phase 4 | Pending |
+| CONV-03 | Phase 4 | Complete |
+| CONV-04 | Phase 4 | Complete |
+| CONV-05 | Phase 4 | Complete |
 | CONV-06 | Phase 3 | Complete |
 | ALLERGY-01 | Phase 5 | Pending |
 | ALLERGY-02 | Phase 5 | Pending |

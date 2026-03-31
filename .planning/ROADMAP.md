@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Menu Capture** - Project scaffolding, camera input, AI vision extraction of menu data (completed 2026-03-30)
 - [x] **Phase 2: Voice Interface** - Speech recognition, AI TTS via audio element, state machine, fallback TTS (completed 2026-03-30)
 - [ ] **Phase 3: Menu Exploration via Voice** - Basic conversational Q&A about menu categories, items, and prices
-- [ ] **Phase 4: Smart Conversation & Decision Support** - Multi-turn context, recommendations, and order decision help
+- [x] **Phase 4: Smart Conversation & Decision Support** - Multi-turn context, recommendations, and order decision help (completed 2026-03-31)
 - [ ] **Phase 5: Allergy & Preference System** - Local allergy profiles, proactive warnings, safety disclaimers
 - [ ] **Phase 6: Accessibility Hardening & Guided Retake** - Voice-only validation, ARIA live regions, photo retake guidance
 
@@ -86,7 +86,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md — System prompt response rules for recommendations, comparison, and decision support
+- [x] 04-01-PLAN.md — System prompt response rules for recommendations, comparison, and decision support
 
 ### Phase 5: Allergy & Preference System
 **Goal**: User's allergies and food preferences are tracked locally and applied proactively during menu conversation
@@ -120,6 +120,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation & Menu Capture | 4/4 | Complete   | 2026-03-30 |
 | 2. Voice Interface | 5/5 | Complete | 2026-03-30 |
 | 3. Menu Exploration via Voice | 2/2 | Complete |  2026-03-30 |
-| 4. Smart Conversation & Decision Support | 0/1 | Not started | - |
+| 4. Smart Conversation & Decision Support | 1/1 | Complete   | 2026-03-31 |
 | 5. Allergy & Preference System | 0/TBD | Not started | - |
 | 6. Accessibility Hardening & Guided Retake | 0/TBD | Not started | - |
