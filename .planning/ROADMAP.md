@@ -113,7 +113,12 @@ Plans:
   1. A VoiceOver user can complete the entire flow (open app, capture photos, explore menu, get allergy warnings, decide on order) without any sighted assistance
   2. All app state changes (new menu loaded, error occurred, listening started) are announced via ARIA live regions to screen readers
   3. When a captured photo is unreadable, the app voice-guides the user to retake it with specific advice (e.g., "The photo is too dark, try moving closer to a light source")
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — AppState retake extension, AppStateAnnouncer component, settings layout for route announcer, page titles
+- [ ] 06-02-PLAN.md — RetakeGuidance component, useMenuExtraction quality detection, page.tsx retake flow wiring
+- [ ] 06-03-PLAN.md — Welcome TTS on first interaction, VoiceOver end-to-end flow verification
 
 ## Progress
 
@@ -127,4 +132,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Menu Exploration via Voice | 2/2 | Complete |  2026-03-30 |
 | 4. Smart Conversation & Decision Support | 1/1 | Complete   | 2026-03-31 |
 | 5. Allergy & Preference System | 3/3 | Complete   | 2026-03-31 |
-| 6. Accessibility Hardening & Guided Retake | 0/TBD | Not started | - |
+| 6. Accessibility Hardening & Guided Retake | 0/3 | Not started | - |
