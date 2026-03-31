@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 06-accessibility-hardening-guided-retake/06-02-PLAN.md — RetakeGuidance component, useMenuExtraction quality detection, page.tsx wired, 2 tasks complete
-last_updated: "2026-03-31T03:32:28.965Z"
+status: verifying
+stopped_at: Completed 06-accessibility-hardening-guided-retake/06-03-PLAN.md — Welcome TTS on first interaction, VoiceOver end-to-end verified, A11Y-01 satisfied, phase 6 complete
+last_updated: "2026-03-31T11:49:09.534Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-03-29)
 
 Phase: 06 (accessibility-hardening-guided-retake) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-31
 
 Progress: [░░░░░░░░░░] 0%
@@ -69,6 +69,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05-allergy-preference-system P02 | 11 | 2 tasks | 6 files |
 | Phase 06-accessibility-hardening-guided-retake P01 | 3 | 2 tasks | 6 files |
 | Phase 06-accessibility-hardening-guided-retake P02 | 15 | 2 tasks | 5 files |
+| Phase 06-accessibility-hardening-guided-retake P03 | 5 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -126,6 +127,7 @@ Recent decisions affecting current work:
 - [Phase 06-accessibility-hardening-guided-retake]: role=alert without aria-live — role=alert implies assertive; adding both causes VoiceOver iOS double-speak
 - [Phase 06-accessibility-hardening-guided-retake]: Attempt N: prefix for VoiceOver iOS deduplication — content must differ on each retry cycle for screen reader re-announcement
 - [Phase 06-accessibility-hardening-guided-retake]: Quality detection before IndexedDB save — low-quality extractions saved but routed to retake state; attemptCount threads through retry cycles
+- [Phase 06-accessibility-hardening-guided-retake]: speakWelcome chained to first ScanButton tap (user gesture) for iOS Safari autoplay compliance; hasPlayedWelcomeRef one-shot guard prevents repeats; TTSClient audio element used per CLAUDE.md hard constraint
 
 ### Pending Todos
 
@@ -138,6 +140,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T03:32:28.957Z
-Stopped at: Completed 06-accessibility-hardening-guided-retake/06-02-PLAN.md — RetakeGuidance component, useMenuExtraction quality detection, page.tsx wired, 2 tasks complete
+Last session: 2026-03-31T11:49:09.518Z
+Stopped at: Completed 06-accessibility-hardening-guided-retake/06-03-PLAN.md — Welcome TTS on first interaction, VoiceOver end-to-end verified, A11Y-01 satisfied, phase 6 complete
 Resume file: None

@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Menu Exploration via Voice** - Basic conversational Q&A about menu categories, items, and prices
 - [x] **Phase 4: Smart Conversation & Decision Support** - Multi-turn context, recommendations, and order decision help (completed 2026-03-31)
 - [x] **Phase 5: Allergy & Preference System** - Local allergy profiles, proactive warnings, safety disclaimers (completed 2026-03-31)
-- [ ] **Phase 6: Accessibility Hardening & Guided Retake** - Voice-only validation, ARIA live regions, photo retake guidance
+- [x] **Phase 6: Accessibility Hardening & Guided Retake** - Voice-only validation, ARIA live regions, photo retake guidance (completed 2026-03-31)
 
 ## Phase Details
 
@@ -118,7 +118,7 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md — AppState retake extension, AppStateAnnouncer component, settings layout for route announcer, page titles
 - [x] 06-02-PLAN.md — RetakeGuidance component, useMenuExtraction quality detection, page.tsx retake flow wiring
-- [ ] 06-03-PLAN.md — Welcome TTS on first interaction, VoiceOver end-to-end flow verification
+- [x] 06-03-PLAN.md — Welcome TTS on first interaction, VoiceOver end-to-end flow verification
 
 ## Progress
 
@@ -132,4 +132,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Menu Exploration via Voice | 2/2 | Complete |  2026-03-30 |
 | 4. Smart Conversation & Decision Support | 1/1 | Complete   | 2026-03-31 |
 | 5. Allergy & Preference System | 3/3 | Complete   | 2026-03-31 |
-| 6. Accessibility Hardening & Guided Retake | 2/3 | In Progress|  |
+| 6. Accessibility Hardening & Guided Retake | 3/3 | Complete   | 2026-03-31 |
