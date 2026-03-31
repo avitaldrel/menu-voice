@@ -11,6 +11,8 @@ import { TTSClient } from '@/lib/tts-client';
 import { startThinkingChime, stopThinkingChime } from '@/lib/thinking-chime';
 import { ChatMessage, OVERVIEW_USER_MESSAGE } from '@/lib/chat-prompt';
 import type { Menu } from '@/lib/menu-schema';
+import { getProfile, saveProfile, type UserProfile } from '@/lib/indexeddb';
+import { parseAllergyMarkers, stripMarkers } from '@/lib/allergy-marker';
 
 export function useVoiceLoop(menu: Menu | null): {
   voiceState: VoiceState;
@@ -48,6 +50,16 @@ export function useVoiceLoop(menu: Menu | null): {
   useEffect(() => {
     menuRef.current = menu;
   }, [menu]);
+
+  // Profile ref — loaded on mount, kept in sync when profile is updated by marker extraction
+  const profileRef = useRef<UserProfile | null>(null);
+
+  // Load profile from IndexedDB on mount
+  useEffect(() => {
+    getProfile().then((p) => {
+      profileRef.current = p;
+    });
+  }, []);
 
   // AbortController for cancelling in-flight fetch requests
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -87,7 +99,7 @@ export function useVoiceLoop(menu: Menu | null): {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: nextMessages, menu: menuRef.current }),
+        body: JSON.stringify({ messages: nextMessages, menu: menuRef.current, profile: profileRef.current }),
         signal: controller.signal,
       });
 
@@ -108,16 +120,31 @@ export function useVoiceLoop(menu: Menu | null): {
         ttsClientRef.current?.queueText(chunk);
       }
 
+      // Extract markers from the full assembled response
+      const extracted = parseAllergyMarkers(fullResponse);
+      const spokenText = stripMarkers(fullResponse);
+
       ttsClientRef.current?.flush();
 
-      // Update response display
-      responseRef.current = fullResponse;
-      setResponseText(fullResponse);
+      // Save extracted markers to profile if any found
+      if (extracted.allergies.length > 0 || extracted.dislikes.length > 0 || extracted.preferences.length > 0) {
+        const existing = profileRef.current ?? { allergies: [], preferences: [], dislikes: [] };
+        const updated: UserProfile = {
+          allergies: [...new Set([...existing.allergies, ...extracted.allergies])],
+          preferences: [...new Set([...existing.preferences, ...extracted.preferences])],
+          dislikes: [...new Set([...existing.dislikes, ...extracted.dislikes])],
+        };
+        await saveProfile(updated);
+        profileRef.current = updated;
+      }
 
-      // Persist assistant turn to conversation history
+      // Use spokenText (markers stripped) for display and conversation history
+      responseRef.current = spokenText;
+      setResponseText(spokenText);
+
       const updatedMessages: ChatMessage[] = [
         ...nextMessages,
-        { role: 'assistant', content: fullResponse },
+        { role: 'assistant', content: spokenText },
       ];
       messagesRef.current = updatedMessages;
       setConversationMessages([...updatedMessages]);

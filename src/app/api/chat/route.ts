@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { buildSystemPrompt, type ChatMessage } from '@/lib/chat-prompt';
 import type { Menu } from '@/lib/menu-schema';
+import type { UserProfile } from '@/lib/indexeddb';
 
 export const maxDuration = 30;
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { messages: ChatMessage[]; menu: Menu };
+  let body: { messages: ChatMessage[]; menu: Menu; profile?: UserProfile | null };
   try {
     body = await request.json();
   } catch {
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { messages, menu } = body;
+  const { messages, menu, profile } = body;
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     return Response.json(
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
   }
 
   const client = new Anthropic();
-  const systemPrompt = buildSystemPrompt(menu);
+  const systemPrompt = buildSystemPrompt(menu, profile);
 
   const stream = client.messages.stream({
     model: 'claude-sonnet-4-6',

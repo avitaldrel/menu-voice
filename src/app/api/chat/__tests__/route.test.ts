@@ -26,8 +26,13 @@ vi.mock('@anthropic-ai/sdk', () => {
   return { default: MockAnthropic };
 });
 
+const { mockBuildSystemPrompt } = vi.hoisted(() => {
+  const mockBuildSystemPrompt = vi.fn().mockReturnValue('MOCK_SYSTEM_PROMPT');
+  return { mockBuildSystemPrompt };
+});
+
 vi.mock('@/lib/chat-prompt', () => ({
-  buildSystemPrompt: vi.fn().mockReturnValue('MOCK_SYSTEM_PROMPT'),
+  buildSystemPrompt: mockBuildSystemPrompt,
 }));
 
 import { POST } from '@/app/api/chat/route';
@@ -52,6 +57,7 @@ beforeEach(() => {
     finalMessage: mockStreamFinalMessage,
     abort: mockStreamAbort,
   });
+  mockBuildSystemPrompt.mockReturnValue('MOCK_SYSTEM_PROMPT');
 });
 
 afterEach(() => {
@@ -216,5 +222,38 @@ describe('POST /api/chat', () => {
     await response.body?.cancel();
 
     expect(mockStreamAbort).toHaveBeenCalled();
+  });
+
+  it('passes profile to buildSystemPrompt when provided in request body', async () => {
+    mockStreamOn.mockImplementation(() => {});
+
+    const testProfile = { allergies: ['dairy'], preferences: [], dislikes: [] };
+
+    const request = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: testMessages, menu: testMenu, profile: testProfile }),
+    });
+
+    const response = await POST(request);
+    await response.body?.cancel();
+
+    expect(mockBuildSystemPrompt).toHaveBeenCalledWith(testMenu, testProfile);
+  });
+
+  it('works without profile in request body (backward compatible)', async () => {
+    mockStreamOn.mockImplementation(() => {});
+
+    const request = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: testMessages, menu: testMenu }),
+    });
+
+    const response = await POST(request);
+    await response.body?.cancel();
+
+    // profile is undefined when not provided — buildSystemPrompt called with (menu, undefined)
+    expect(mockBuildSystemPrompt).toHaveBeenCalledWith(testMenu, undefined);
   });
 });

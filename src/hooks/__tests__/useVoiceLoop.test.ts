@@ -113,6 +113,28 @@ vi.mock('@/lib/thinking-chime', () => ({
   stopThinkingChime: mockStopThinkingChime,
 }));
 
+const { mockGetProfile, mockSaveProfile } = vi.hoisted(() => {
+  const mockGetProfile = vi.fn().mockResolvedValue(null);
+  const mockSaveProfile = vi.fn().mockResolvedValue(undefined);
+  return { mockGetProfile, mockSaveProfile };
+});
+
+vi.mock('@/lib/indexeddb', () => ({
+  getProfile: mockGetProfile,
+  saveProfile: mockSaveProfile,
+}));
+
+const { mockParseAllergyMarkers, mockStripMarkers } = vi.hoisted(() => {
+  const mockParseAllergyMarkers = vi.fn().mockReturnValue({ allergies: [], dislikes: [], preferences: [] });
+  const mockStripMarkers = vi.fn().mockImplementation((text: string) => text);
+  return { mockParseAllergyMarkers, mockStripMarkers };
+});
+
+vi.mock('@/lib/allergy-marker', () => ({
+  parseAllergyMarkers: mockParseAllergyMarkers,
+  stripMarkers: mockStripMarkers,
+}));
+
 import { useVoiceLoop } from '@/hooks/useVoiceLoop';
 import { OVERVIEW_USER_MESSAGE } from '@/lib/chat-prompt';
 import type { Menu } from '@/lib/menu-schema';
@@ -175,6 +197,11 @@ describe('useVoiceLoop', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockIsSupported.value = true;
+    // Restore default implementations for indexeddb and allergy-marker mocks
+    mockGetProfile.mockResolvedValue(null);
+    mockSaveProfile.mockResolvedValue(undefined);
+    mockParseAllergyMarkers.mockReturnValue({ allergies: [], dislikes: [], preferences: [] });
+    mockStripMarkers.mockImplementation((text: string) => text);
   });
 
   afterEach(() => {
@@ -628,5 +655,105 @@ describe('useVoiceLoop', () => {
     const { result } = renderHook(() => useVoiceLoop(null));
     expect(Array.isArray(result.current.conversationMessages)).toBe(true);
     expect(result.current.conversationMessages).toHaveLength(0);
+  });
+
+  // ─── New allergy profile integration tests ───────────────────────────────
+
+  // Test 25: loads profile on mount via getProfile()
+  it('loads profile on mount via getProfile()', async () => {
+    mockGetProfile.mockResolvedValue({ allergies: ['peanuts'], preferences: [], dislikes: [] });
+
+    await act(async () => {
+      renderHook(() => useVoiceLoop(testMenu));
+    });
+
+    expect(mockGetProfile).toHaveBeenCalledOnce();
+  });
+
+  // Test 26: includes profile in fetch body when calling /api/chat
+  it('includes profile in fetch body when calling /api/chat', async () => {
+    const testProfile = { allergies: ['shellfish'], preferences: [], dislikes: [] };
+    mockGetProfile.mockResolvedValue(testProfile);
+
+    const fetchMock = makeFetchMock(['Some response']);
+    vi.stubGlobal('fetch', fetchMock);
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    // Allow the mount useEffect to resolve
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    await act(async () => {
+      result.current.handleTextInput('What options do you have?');
+    });
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    const body = JSON.parse(options.body as string) as { profile: unknown };
+    expect(body.profile).toEqual(testProfile);
+  });
+
+  // Test 27: calls parseAllergyMarkers with full response text after stream completes
+  it('calls parseAllergyMarkers with full response text after stream completes', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(['Got it. ', '[ALLERGY:shellfish]']));
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    await act(async () => {
+      result.current.handleTextInput('I am allergic to shellfish.');
+    });
+
+    expect(mockParseAllergyMarkers).toHaveBeenCalledWith('Got it. [ALLERGY:shellfish]');
+  });
+
+  // Test 28: calls saveProfile when markers are detected in response
+  it('calls saveProfile when markers are detected in response', async () => {
+    mockParseAllergyMarkers.mockReturnValue({ allergies: ['shellfish'], dislikes: [], preferences: [] });
+    vi.stubGlobal('fetch', makeFetchMock(['Got it. [ALLERGY:shellfish]']));
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    await act(async () => {
+      result.current.handleTextInput('I am allergic to shellfish.');
+    });
+
+    expect(mockSaveProfile).toHaveBeenCalledOnce();
+    const savedProfile = mockSaveProfile.mock.calls[0][0] as { allergies: string[] };
+    expect(savedProfile.allergies).toContain('shellfish');
+  });
+
+  // Test 29: stores stripped text (not raw markers) in conversationMessages
+  it('stores stripped text (not raw markers) in conversationMessages', async () => {
+    mockStripMarkers.mockReturnValue('Got it, I will keep an eye out for shellfish.');
+    vi.stubGlobal('fetch', makeFetchMock(['Got it, I will keep an eye out for shellfish. [ALLERGY:shellfish]']));
+
+    const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+    act(() => {
+      result.current.startListening();
+    });
+
+    await act(async () => {
+      result.current.handleTextInput('I am allergic to shellfish.');
+    });
+
+    const messages = result.current.conversationMessages;
+    const assistantMsg = messages.find((m) => m.role === 'assistant');
+    expect(assistantMsg?.content).toBe('Got it, I will keep an eye out for shellfish.');
+    expect(assistantMsg?.content).not.toContain('[ALLERGY:');
   });
 });
