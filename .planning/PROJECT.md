@@ -18,13 +18,13 @@ A blind person can independently understand and choose from any restaurant menu 
 - [x] Conversational menu exploration (categories, items, ingredients, prices) — Validated in Phase 3: Menu Exploration via Voice
 
 - [x] Help user decide what to order through natural conversation — Validated in Phase 4: Smart Conversation & Decision Support
+- [x] User profile with allergies and food preferences (stored locally) — Validated in Phase 5: Allergy & Preference System
+- [x] In-conversation allergy/dislike capture (even without prior profile setup) — Validated in Phase 5: Allergy & Preference System
+- [x] Proactive allergy/preference warnings on every mentioned item — Validated in Phase 5: Allergy & Preference System
+- [x] Suggest asking server about allergen-free modifications — Validated in Phase 5: Allergy & Preference System
 
 ### Active
 - [ ] Guide user to retake photos when text is unreadable
-- [ ] User profile with allergies and food preferences (stored locally)
-- [ ] In-conversation allergy/dislike capture (even without prior profile setup)
-- [ ] Proactive allergy/preference warnings on every mentioned item
-- [ ] Suggest asking server about allergen-free modifications
 - [ ] Screen reader and keyboard accessible (full hardening)
 
 ### Out of Scope
@@ -86,7 +86,7 @@ A blind person can independently understand and choose from any restaurant menu 
 - Track decision outcomes as phases reveal what works
 
 ## Current State
-Phase 4 complete — System prompt enhanced with 7 new response rules for recommendations, ordinal reference resolution, contrastive comparisons, and proactive decision support. 189 tests passing across 18 files. Ready for Phase 5: Allergy & Preference System.
+Phase 5 complete — Allergy/preference profile with IndexedDB persistence, in-conversation capture via markers, proactive allergen warnings, modification suggestions, safety disclaimer, and settings page CRUD. 240 tests passing across 21 files. Ready for Phase 6: Accessibility Hardening & Guided Retake.
 
 ## Last Updated
-2026-03-31 (after Phase 4 completion)
+2026-03-31 (after Phase 5 completion)
