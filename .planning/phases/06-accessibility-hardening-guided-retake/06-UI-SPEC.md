@@ -51,20 +51,20 @@ Exceptions:
 
 ## Typography
 
-Source: audited from existing components and globals.css. Four roles in use across the project.
+Source: audited from existing components and globals.css. Exactly 4 sizes and 2 weights are permitted across the entire project.
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body | 16px (`text-base`) | 400 regular | 1.5 (Tailwind default) |
 | Label | 14px (`text-sm`) | 400 regular | 1.5 |
+| Body | 16px (`text-base`) | 400 regular | 1.5 |
 | Heading | 20px (`text-xl`) | 600 semibold | 1.2 |
-| Display | 28px (`text-2xl`) / 24px as fallback | 700 bold | 1.2 |
+| Display | 28px (`text-2xl`) | 700 bold | 1.2 |
 
 Notes:
-- Settings page h1 uses `text-2xl font-bold` (24px/700)
-- Settings section h2 uses `text-xl font-semibold` (20px/600)
-- Error message uses `text-lg font-medium` (18px/500) — permitted one-off for urgency
-- New components in this phase (`AppStateAnnouncer`, `RetakeGuidance`) must use `text-base` (16px/400) for body copy and `text-base` (16px/600 semibold) for button labels
+- Settings page h1 uses `text-2xl font-bold` (28px/700) — maps to Display role
+- Settings section h2 uses `text-xl font-semibold` (20px/600) — maps to Heading role
+- Error message text uses `text-xl font-semibold` (20px/600) — urgency signalled visually within the type scale; ARIA urgency provided by `role="alert"` on ErrorState
+- New components in this phase (`AppStateAnnouncer`, `RetakeGuidance`) must use `text-base` (16px/400) for body copy and `text-xl font-semibold` (20px/600) for button labels where emphasis is needed
 
 ---
 
@@ -122,7 +122,7 @@ Visual contract:
 - Guidance panel: `text-base text-yellow-800 bg-yellow-50 rounded-lg p-4`
 - ScanButton (retake): reuse existing component, full-width — primary action
 - "Proceed with what I have" button (shown only when `attemptCount >= 2`):
-  - `min-h-[48px] px-6 text-lg font-semibold bg-gray-700 text-white rounded-2xl`
+  - `min-h-[48px] px-6 text-xl font-semibold bg-gray-700 text-white rounded-2xl`
   - `focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-black`
   - `aria-label="Proceed with partial menu data"`
 
