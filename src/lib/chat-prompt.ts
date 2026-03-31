@@ -1,4 +1,5 @@
 import type { Menu } from '@/lib/menu-schema';
+import type { UserProfile } from '@/lib/indexeddb';
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
@@ -8,7 +9,48 @@ export interface ChatMessage {
 export const OVERVIEW_USER_MESSAGE =
   'Give me a brief overview of this restaurant and its menu categories. Mention the restaurant type, list the category names, and tell me the total number of items.';
 
-export function buildSystemPrompt(menu: Menu): string {
+/**
+ * Build the allergy & preference section of the system prompt.
+ * Returns empty string when profile has no allergies, dislikes, or preferences.
+ */
+function buildAllergySection(profile?: UserProfile | null): string {
+  if (!profile) return '';
+
+  const hasAllergies = profile.allergies.length > 0;
+  const hasDislikes = profile.dislikes.length > 0;
+  const hasPreferences = profile.preferences.length > 0;
+
+  if (!hasAllergies && !hasDislikes && !hasPreferences) return '';
+
+  const profileLines: string[] = [];
+  if (hasAllergies) {
+    profileLines.push(`Allergies (safety-critical): ${profile.allergies.join(', ')}`);
+  }
+  if (hasDislikes) {
+    profileLines.push(`Dislikes (preference only): ${profile.dislikes.join(', ')}`);
+  }
+  if (hasPreferences) {
+    profileLines.push(`Preferences: ${profile.preferences.join(', ')}`);
+  }
+
+  return `
+
+ALLERGY & PREFERENCE PROFILE:
+${profileLines.join('\n')}
+
+ALLERGY RESPONSE RULES:
+- Rule 1 (Proactive warning): When any menu item being discussed contains or likely contains a user's allergen, proactively warn them. Format: "Heads up — the [item] has [allergen]. You could ask if they can make it without [allergen]." Do this EVERY time an allergen-containing item is mentioned, not just the first time.
+- Rule 2 (Modification suggestion): When warning about an allergen, always suggest asking the server about modifications. If the menu item has known modifications, mention them. Otherwise suggest: "You could ask if they can make it without [allergen]."
+- Rule 3 (Safety disclaimer — once per conversation): Speak the safety disclaimer exactly once per conversation, after the first allergen warning you give. Say: "Just so you know, allergy information is based on the menu text — always confirm with your server." Do not repeat this disclaimer on subsequent allergen warnings in the same session.
+- Rule 4 (Uncertain allergens): If a menu item has no listed allergens but the description hints at potential allergens (e.g., "cream sauce" suggests dairy, "breaded" suggests gluten), flag it: "This might contain [allergen] based on the description — worth checking with your server."
+- Rule 5 (Overview mention): If the user has allergies noted in their profile, mention them during the initial overview. Example: "I have your dairy and nut allergies noted and will flag any items that might contain them."
+
+IN-CONVERSATION ALLERGY CAPTURE RULES:
+- Rule 6 (Capture trigger): When the user mentions a new allergy ("I'm allergic to X", "I can't eat X") or dislike ("I don't like Y", "I hate Y"), first ask: "Is that an allergy or just a preference? I want to make sure I flag things at the right safety level." Then confirm: "I'll remember that you're allergic to [X]. Is that right?"
+- Rule 7 (Marker emission): After the user confirms a new allergy or dislike, emit a structured marker at the END of your response (after all natural spoken text). Use exactly this format: [ALLERGY:item] for allergies or [DISLIKE:item] for dislikes or [PREFERENCE:item] for preferences. Example: "Got it, I'll keep an eye out for shellfish in everything we discuss. [ALLERGY:shellfish]" Place markers at the very end of the response, never in the middle of natural text.`;
+}
+
+export function buildSystemPrompt(menu: Menu, profile?: UserProfile | null): string {
   const menuJson = JSON.stringify(menu, null, 2);
 
   return `You are a helpful restaurant guide for a blind diner using a voice interface. The diner cannot see the menu. You are their eyes and voice guide.
@@ -29,5 +71,5 @@ RESPONSE RULES:
 - When comparing items at the user's request, describe each item in one sentence covering key differences (preparation, key ingredients), then include price. Use a contrastive structure: "The [item A] is [description], at $X. The [item B] is [description], at $Y." Keep comparisons to 2-3 items maximum.
 - If the conversation has included 3 or more exchanges about specific menu items, naturally offer: "Would you like help narrowing it down?"
 - When asked to help decide or compare, end with a clear recommendation: "Based on what you've mentioned, I'd suggest the [item] because [brief reason]."
-- If the user says they can't decide, ask one question about mood or hunger level, then give a single clear recommendation — not multiple options.`;
+- If the user says they can't decide, ask one question about mood or hunger level, then give a single clear recommendation — not multiple options.${buildAllergySection(profile)}`;
 }

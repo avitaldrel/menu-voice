@@ -132,6 +132,101 @@ describe('buildSystemPrompt', () => {
   });
 });
 
+describe('buildSystemPrompt with allergy profile', () => {
+  it('Test 1: no profile argument returns prompt WITHOUT allergy section', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).not.toContain('ALLERGY & PREFERENCE PROFILE');
+    expect(prompt).not.toContain('ALLERGY RESPONSE RULES');
+  });
+
+  it('Test 2: null profile returns prompt WITHOUT allergy section', () => {
+    const prompt = buildSystemPrompt(testMenu, null);
+    expect(prompt).not.toContain('ALLERGY & PREFERENCE PROFILE');
+    expect(prompt).not.toContain('ALLERGY RESPONSE RULES');
+  });
+
+  it('Test 3: empty profile (no allergies or dislikes) returns prompt WITHOUT allergy section', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: [], preferences: [], dislikes: [] });
+    expect(prompt).not.toContain('ALLERGY & PREFERENCE PROFILE');
+    expect(prompt).not.toContain('ALLERGY RESPONSE RULES');
+  });
+
+  it('Test 4: profile with allergies includes allergen names in prompt', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy', 'nuts'], preferences: [], dislikes: [] });
+    expect(prompt).toContain('dairy');
+    expect(prompt).toContain('nuts');
+  });
+
+  it('Test 5: prompt with allergies contains "safety-critical"', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['peanuts'], preferences: [], dislikes: [] });
+    expect(prompt).toContain('safety-critical');
+  });
+
+  it('Test 6: profile with dislikes includes dislike item in prompt', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: [], preferences: [], dislikes: ['cilantro'] });
+    expect(prompt).toContain('cilantro');
+  });
+
+  it('Test 7: prompt with dislikes contains "preference only"', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: [], preferences: [], dislikes: ['cilantro'] });
+    expect(prompt).toContain('preference only');
+  });
+
+  it('Test 8: prompt with allergies contains proactive warning rule ("warn" or "heads up" keyword)', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    const lowerPrompt = prompt.toLowerCase();
+    expect(lowerPrompt.includes('warn') || lowerPrompt.includes('heads up')).toBe(true);
+  });
+
+  it('Test 9: prompt with allergies contains modification suggestion ("ask" and "server" keywords)', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    expect(prompt).toContain('ask');
+    expect(prompt).toContain('server');
+  });
+
+  it('Test 10: prompt with allergies contains once-per-session safety disclaimer ("confirm with your server" or "confirm with" keyword)', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    expect(prompt).toContain('confirm with');
+  });
+
+  it('Test 11: prompt with allergies contains "once" keyword for disclaimer frequency', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    expect(prompt).toContain('once');
+  });
+
+  it('Test 12: prompt contains marker emission instruction "[ALLERGY:"', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    expect(prompt).toContain('[ALLERGY:');
+  });
+
+  it('Test 13: prompt contains marker emission instruction "[DISLIKE:"', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    expect(prompt).toContain('[DISLIKE:');
+  });
+
+  it('Test 14: prompt contains instruction to distinguish allergy vs. dislike ("allergy or" and "preference" keywords)', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    expect(prompt.toLowerCase()).toContain('allergy or');
+    expect(prompt).toContain('preference');
+  });
+
+  it('Test 15: prompt contains instruction to confirm before capturing ("confirm" keyword)', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    expect(prompt).toContain('confirm');
+  });
+
+  it('Test 16: prompt contains instruction to mention noted allergies in overview', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy', 'nuts'], preferences: [], dislikes: [] });
+    expect(prompt.toLowerCase()).toMatch(/overview|noted|mention/);
+  });
+
+  it('Test 17: prompt contains instruction to place markers at end of response', () => {
+    const prompt = buildSystemPrompt(testMenu, { allergies: ['dairy'], preferences: [], dislikes: [] });
+    const lowerPrompt = prompt.toLowerCase();
+    expect(lowerPrompt.includes('end of') || lowerPrompt.includes('at the end')).toBe(true);
+  });
+});
+
 describe('ChatMessage', () => {
   it('has role: "user" | "assistant" and content: string', () => {
     // Type-level test — if this compiles, the type is correct
