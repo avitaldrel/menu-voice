@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Completed 05-allergy-preference-system/05-02-PLAN.md — allergy profile integration, profile piped through all layers, marker extraction in voice loop, 2 tasks complete
-last_updated: "2026-03-31T02:20:53.152Z"
+status: executing
+stopped_at: Completed 06-accessibility-hardening-guided-retake/06-01-PLAN.md — AppState retake variant, AppStateAnnouncer, settings layout, 2 tasks complete
+last_updated: "2026-03-31T03:25:05.587Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 15
-  completed_plans: 15
+  total_plans: 18
+  completed_plans: 16
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** A blind person can independently understand and choose from any restaurant menu through voice conversation.
-**Current focus:** Phase 05 — allergy-preference-system
+**Current focus:** Phase 06 — accessibility-hardening-guided-retake
 
 ## Current Position
 
-Phase: 6
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 06 (accessibility-hardening-guided-retake) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
 Last activity: 2026-03-31
 
 Progress: [░░░░░░░░░░] 0%
@@ -67,6 +67,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05-allergy-preference-system P01 | 14 | 2 tasks | 6 files |
 | Phase 05-allergy-preference-system P03 | 9 | 1 tasks | 2 files |
 | Phase 05-allergy-preference-system P02 | 11 | 2 tasks | 6 files |
+| Phase 06-accessibility-hardening-guided-retake P01 | 3 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -119,6 +120,8 @@ Recent decisions affecting current work:
 - [Phase 05-allergy-preference-system]: Allergy section appended only when profile has data — empty profile produces no section (backward compatible)
 - [Phase 05-allergy-preference-system]: Markers instructed at END of Claude response so streaming TTS receives clean sentence text before markers arrive; residual marker text in last TTS buffer is known v1 limitation
 - [Phase 05-allergy-preference-system]: spokenText (stripMarkers result) stored in conversation history — raw markers never appear in display or multi-turn context
+- [Phase 06-accessibility-hardening-guided-retake]: AppStateAnnouncer produces empty string for retake — RetakeGuidance component (Plan 02) handles retake-specific announcements
+- [Phase 06-accessibility-hardening-guided-retake]: Settings layout.tsx is server component (no use client) so Next.js App Router can export metadata for route announcer
 
 ### Pending Todos
 
@@ -131,6 +134,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T02:15:33.783Z
-Stopped at: Completed 05-allergy-preference-system/05-02-PLAN.md — allergy profile integration, profile piped through all layers, marker extraction in voice loop, 2 tasks complete
+Last session: 2026-03-31T03:25:05.575Z
+Stopped at: Completed 06-accessibility-hardening-guided-retake/06-01-PLAN.md — AppState retake variant, AppStateAnnouncer, settings layout, 2 tasks complete
 Resume file: None

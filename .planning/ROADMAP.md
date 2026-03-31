@@ -116,7 +116,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — AppState retake extension, AppStateAnnouncer component, settings layout for route announcer, page titles
+- [x] 06-01-PLAN.md — AppState retake extension, AppStateAnnouncer component, settings layout for route announcer, page titles
 - [ ] 06-02-PLAN.md — RetakeGuidance component, useMenuExtraction quality detection, page.tsx retake flow wiring
 - [ ] 06-03-PLAN.md — Welcome TTS on first interaction, VoiceOver end-to-end flow verification
 
@@ -132,4 +132,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Menu Exploration via Voice | 2/2 | Complete |  2026-03-30 |
 | 4. Smart Conversation & Decision Support | 1/1 | Complete   | 2026-03-31 |
 | 5. Allergy & Preference System | 3/3 | Complete   | 2026-03-31 |
-| 6. Accessibility Hardening & Guided Retake | 0/3 | Not started | - |
+| 6. Accessibility Hardening & Guided Retake | 1/3 | In Progress|  |

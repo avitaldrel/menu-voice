@@ -40,7 +40,7 @@
 
 ### Accessibility (A11Y)
 - [ ] **A11Y-01**: All functionality accessible via voice alone — no visual interaction required
-- [ ] **A11Y-02**: ARIA live regions announce app state changes to screen readers
+- [x] **A11Y-02**: ARIA live regions announce app state changes to screen readers
 - [x] **A11Y-03**: High-contrast, large touch targets for any visual UI elements
 - [x] **A11Y-04**: Keyboard navigable for users with partial vision
 - [x] **A11Y-05**: TTS output uses `<audio>` element to avoid conflict with active screen readers
@@ -102,7 +102,7 @@
 | ALLERGY-05 | Phase 5 | Complete |
 | ALLERGY-06 | Phase 5 | Complete |
 | A11Y-01 | Phase 6 | Pending |
-| A11Y-02 | Phase 6 | Pending |
+| A11Y-02 | Phase 6 | Complete |
 | A11Y-03 | Phase 1 | Complete |
 | A11Y-04 | Phase 1 | Complete |
 | A11Y-05 | Phase 2 | Complete |
