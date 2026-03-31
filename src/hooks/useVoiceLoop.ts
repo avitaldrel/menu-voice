@@ -26,6 +26,7 @@ export function useVoiceLoop(menu: Menu | null): {
   response: string;
   triggerOverview: () => void;
   conversationMessages: ChatMessage[];
+  speakWelcome: () => void;
 } {
   const [voiceState, dispatch] = useReducer(voiceReducer, initialVoiceState);
   const [needsPermissionPrompt, setNeedsPermissionPrompt] = useState(true);
@@ -63,6 +64,9 @@ export function useVoiceLoop(menu: Menu | null): {
 
   // AbortController for cancelling in-flight fetch requests
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // One-shot guard — welcome TTS only plays once per session
+  const hasPlayedWelcomeRef = useRef(false);
 
   // isSupported is stable — evaluated once (SSR safe)
   const isSupported = isSpeechRecognitionSupported();
@@ -218,6 +222,22 @@ export function useVoiceLoop(menu: Menu | null): {
   }, [triggerResponse]);
 
   /**
+   * Speak the one-shot welcome message on first user interaction.
+   * Chained to the first ScanButton tap (user gesture) to satisfy iOS Safari autoplay policy.
+   * Uses TTSClient (audio element) per CLAUDE.md — NOT SpeechSynthesis.
+   * One-shot via hasPlayedWelcomeRef — never repeats within the same session.
+   */
+  const speakWelcome = useCallback(() => {
+    if (hasPlayedWelcomeRef.current) return;
+    hasPlayedWelcomeRef.current = true;
+    ensureInstances();
+    const welcomeText = 'Welcome to MenuVoice. Tap Scan Menu to photograph a restaurant menu.';
+    ttsClientRef.current?.queueText(welcomeText);
+    ttsClientRef.current?.flush();
+    dispatch({ type: 'SPEECH_RESULT', transcript: '' });
+  }, [ensureInstances]);
+
+  /**
    * Start listening. Creates instances lazily.
    */
   const startListening = useCallback(() => {
@@ -318,5 +338,6 @@ export function useVoiceLoop(menu: Menu | null): {
     response,
     triggerOverview,
     conversationMessages,
+    speakWelcome,
   };
 }

@@ -14,6 +14,8 @@ import { VoiceStateIndicator } from '@/components/VoiceStateIndicator';
 import { TranscriptDisplay } from '@/components/TranscriptDisplay';
 import { MicPermissionPrompt } from '@/components/MicPermissionPrompt';
 import { TextInputFallback } from '@/components/TextInputFallback';
+import { RetakeGuidance } from '@/components/RetakeGuidance';
+import { AppStateAnnouncer } from '@/components/AppStateAnnouncer';
 
 const initialState: AppState = { status: 'idle' };
 
@@ -32,6 +34,7 @@ export default function HomePage() {
     transcript,
     response,
     triggerOverview,
+    speakWelcome,
   } = useVoiceLoop(menu);
 
   // Map mic button taps to voice state transitions per UI-SPEC State Machine Interaction Contract
@@ -49,6 +52,20 @@ export default function HomePage() {
     }
   }, [voiceState.status, startListening, stopListening]);
 
+  // A11Y-01: Welcome TTS on first user gesture — chained to the first ScanButton tap
+  // in idle state to satisfy iOS Safari autoplay policy (audio requires user gesture).
+  // speakWelcome is a one-shot — subsequent taps to extract do not repeat the welcome.
+  const handleIdleScan = useCallback((files: File[]) => {
+    speakWelcome();
+    extract(files);
+  }, [speakWelcome, extract]);
+
+  // MENU-04: Retake handler — increments attemptCount on each retry cycle
+  const handleRetake = useCallback((files: File[]) => {
+    const attemptCount = state.status === 'retake' ? state.attemptCount + 1 : 1;
+    extract(files, attemptCount);
+  }, [state, extract]);
+
   // MENU-05: Proactive overview — triggered once when app enters results state.
   // Replaces Phase 2 D-01 auto-start. Voice loop begins listening automatically
   // after overview TTS finishes (PLAYBACK_ENDED -> listening via state machine).
@@ -63,6 +80,9 @@ export default function HomePage() {
     <div className="max-w-lg mx-auto">
       {/* D-01: Screen reader announcement for the landing page */}
       <h1 className="sr-only">MenuVoice. Tap Scan Menu to photograph a restaurant menu.</h1>
+
+      {/* AppStateAnnouncer ARIA live region — ALWAYS in DOM (announces processing/results transitions) */}
+      <AppStateAnnouncer appState={state} />
 
       {/* ProcessingState ARIA live region — ALWAYS in DOM (prevents screen reader re-mount issues) */}
       <ProcessingState
@@ -81,7 +101,7 @@ export default function HomePage() {
       {state.status === 'idle' && (
         <div className="flex flex-col items-center gap-6 pt-8">
           <div className="w-full max-w-sm">
-            <ScanButton onFilesSelected={extract} />
+            <ScanButton onFilesSelected={handleIdleScan} />
           </div>
           <RecentSessions />
         </div>
@@ -127,6 +147,16 @@ export default function HomePage() {
             />
           </div>
         </div>
+      )}
+
+      {/* Retake state: guided retake UI with ARIA alert, ScanButton, and conditional proceed button */}
+      {state.status === 'retake' && (
+        <RetakeGuidance
+          guidance={state.guidance}
+          attemptCount={state.attemptCount}
+          onRetake={handleRetake}
+          onProceed={() => dispatch({ type: 'PROCEED_ANYWAY' })}
+        />
       )}
 
       {/* Error state: error message + retry */}
