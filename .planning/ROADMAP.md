@@ -103,7 +103,7 @@ Plans:
 Plans:
 - [x] 05-01-PLAN.md — UserProfile type, IndexedDB CRUD, allergy marker parsing utilities, fake-indexeddb setup
 - [ ] 05-02-PLAN.md — System prompt allergy rules, chat API profile wiring, useVoiceLoop marker extraction
-- [ ] 05-03-PLAN.md — Settings page UI with profile CRUD (add/remove allergies, preferences, dislikes)
+- [x] 05-03-PLAN.md — Settings page UI with profile CRUD (add/remove allergies, preferences, dislikes)
 
 ### Phase 6: Accessibility Hardening & Guided Retake
 **Goal**: App works flawlessly via voice alone on iOS Safari with VoiceOver, with no sighted interaction required at any step
@@ -126,5 +126,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Voice Interface | 5/5 | Complete | 2026-03-30 |
 | 3. Menu Exploration via Voice | 2/2 | Complete |  2026-03-30 |
 | 4. Smart Conversation & Decision Support | 1/1 | Complete   | 2026-03-31 |
-| 5. Allergy & Preference System | 1/3 | In Progress|  |
+| 5. Allergy & Preference System | 2/3 | In Progress|  |
 | 6. Accessibility Hardening & Guided Retake | 0/TBD | Not started | - |
