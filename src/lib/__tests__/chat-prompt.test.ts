@@ -89,6 +89,47 @@ describe('buildSystemPrompt', () => {
     const prompt = buildSystemPrompt(testMenu);
     expect(prompt).toContain('avoid markdown');
   });
+
+  it('includes the recommendation clarifying question rule', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).toContain('clarifying question');
+  });
+
+  it('includes the conversation interest carry-forward rule', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).toMatch(/interest.*earlier|earlier.*interest/is);
+  });
+
+  it('includes the ordinal reference resolution rule', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).toContain('prior responses');
+  });
+
+  it('includes the contrastive comparison format rule', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).toContain('comparing items');
+  });
+
+  it('includes price in comparison rule', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).toContain('price');
+    expect(prompt).toMatch(/compar.*price|price.*compar/is);
+  });
+
+  it('includes the proactive narrowing trigger rule', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).toContain('narrowing it down');
+  });
+
+  it('includes the clear final recommendation rule', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).toContain("I'd suggest");
+  });
+
+  it('includes the single-recommendation rule for undecided users', () => {
+    const prompt = buildSystemPrompt(testMenu);
+    expect(prompt).toContain("can't decide");
+  });
 });
 
 describe('ChatMessage', () => {
