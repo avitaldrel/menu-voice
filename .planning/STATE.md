@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 05-allergy-preference-system/05-03-PLAN.md — Settings page CRUD UI, 1 task complete
-last_updated: "2026-03-31T02:13:26.411Z"
+status: verifying
+stopped_at: Completed 05-allergy-preference-system/05-02-PLAN.md — allergy profile integration, profile piped through all layers, marker extraction in voice loop, 2 tasks complete
+last_updated: "2026-03-31T02:15:33.820Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 15
-  completed_plans: 14
+  completed_plans: 15
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-03-29)
 
 Phase: 05 (allergy-preference-system) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-31
 
 Progress: [░░░░░░░░░░] 0%
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-smart-conversation-decision-support P01 | 3 | 2 tasks | 2 files |
 | Phase 05-allergy-preference-system P01 | 14 | 2 tasks | 6 files |
 | Phase 05-allergy-preference-system P03 | 9 | 1 tasks | 2 files |
+| Phase 05-allergy-preference-system P02 | 11 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,9 @@ Recent decisions affecting current work:
 - [Phase 05-allergy-preference-system]: stripMarkers adds space-before-punctuation cleanup to handle periods left after trailing marker removal
 - [Phase 05-allergy-preference-system]: Settings page button text = inputLabel prop string — avoids aria-label conflict with getByLabelText on inputs
 - [Phase 05-allergy-preference-system]: ProfileSection accepts inputLabel as explicit prop rather than computing singular form from title — avoids irregular pluralization bugs (allergies→allergie)
+- [Phase 05-allergy-preference-system]: Allergy section appended only when profile has data — empty profile produces no section (backward compatible)
+- [Phase 05-allergy-preference-system]: Markers instructed at END of Claude response so streaming TTS receives clean sentence text before markers arrive; residual marker text in last TTS buffer is known v1 limitation
+- [Phase 05-allergy-preference-system]: spokenText (stripMarkers result) stored in conversation history — raw markers never appear in display or multi-turn context
 
 ### Pending Todos
 
@@ -127,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T02:13:26.364Z
-Stopped at: Completed 05-allergy-preference-system/05-03-PLAN.md — Settings page CRUD UI, 1 task complete
+Last session: 2026-03-31T02:15:33.783Z
+Stopped at: Completed 05-allergy-preference-system/05-02-PLAN.md — allergy profile integration, profile piped through all layers, marker extraction in voice loop, 2 tasks complete
 Resume file: None

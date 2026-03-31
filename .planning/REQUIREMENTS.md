@@ -33,9 +33,9 @@
 ### Allergy & Preference Management (ALLERGY)
 - [x] **ALLERGY-01**: User can create a profile with allergies and food preferences stored locally
 - [x] **ALLERGY-02**: User can mention allergies/dislikes during conversation and app captures them on the fly
-- [ ] **ALLERGY-03**: App proactively warns when a mentioned menu item contains a known allergen or disliked ingredient
-- [ ] **ALLERGY-04**: App suggests asking the server if a dish can be made without the allergen/disliked ingredient
-- [ ] **ALLERGY-05**: App includes spoken safety disclaimer that allergy info is based on menu text and should be confirmed with staff
+- [x] **ALLERGY-03**: App proactively warns when a mentioned menu item contains a known allergen or disliked ingredient
+- [x] **ALLERGY-04**: App suggests asking the server if a dish can be made without the allergen/disliked ingredient
+- [x] **ALLERGY-05**: App includes spoken safety disclaimer that allergy info is based on menu text and should be confirmed with staff
 - [x] **ALLERGY-06**: Profile persists across sessions via local browser storage (IndexedDB)
 
 ### Accessibility (A11Y)
@@ -97,9 +97,9 @@
 | CONV-06 | Phase 3 | Complete |
 | ALLERGY-01 | Phase 5 | Complete |
 | ALLERGY-02 | Phase 5 | Complete |
-| ALLERGY-03 | Phase 5 | Pending |
-| ALLERGY-04 | Phase 5 | Pending |
-| ALLERGY-05 | Phase 5 | Pending |
+| ALLERGY-03 | Phase 5 | Complete |
+| ALLERGY-04 | Phase 5 | Complete |
+| ALLERGY-05 | Phase 5 | Complete |
 | ALLERGY-06 | Phase 5 | Complete |
 | A11Y-01 | Phase 6 | Pending |
 | A11Y-02 | Phase 6 | Pending |

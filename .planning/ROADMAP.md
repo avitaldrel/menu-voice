@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Voice Interface** - Speech recognition, AI TTS via audio element, state machine, fallback TTS (completed 2026-03-30)
 - [ ] **Phase 3: Menu Exploration via Voice** - Basic conversational Q&A about menu categories, items, and prices
 - [x] **Phase 4: Smart Conversation & Decision Support** - Multi-turn context, recommendations, and order decision help (completed 2026-03-31)
-- [ ] **Phase 5: Allergy & Preference System** - Local allergy profiles, proactive warnings, safety disclaimers
+- [x] **Phase 5: Allergy & Preference System** - Local allergy profiles, proactive warnings, safety disclaimers (completed 2026-03-31)
 - [ ] **Phase 6: Accessibility Hardening & Guided Retake** - Voice-only validation, ARIA live regions, photo retake guidance
 
 ## Phase Details
@@ -102,7 +102,7 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md — UserProfile type, IndexedDB CRUD, allergy marker parsing utilities, fake-indexeddb setup
-- [ ] 05-02-PLAN.md — System prompt allergy rules, chat API profile wiring, useVoiceLoop marker extraction
+- [x] 05-02-PLAN.md — System prompt allergy rules, chat API profile wiring, useVoiceLoop marker extraction
 - [x] 05-03-PLAN.md — Settings page UI with profile CRUD (add/remove allergies, preferences, dislikes)
 
 ### Phase 6: Accessibility Hardening & Guided Retake
@@ -126,5 +126,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Voice Interface | 5/5 | Complete | 2026-03-30 |
 | 3. Menu Exploration via Voice | 2/2 | Complete |  2026-03-30 |
 | 4. Smart Conversation & Decision Support | 1/1 | Complete   | 2026-03-31 |
-| 5. Allergy & Preference System | 2/3 | In Progress|  |
+| 5. Allergy & Preference System | 3/3 | Complete   | 2026-03-31 |
 | 6. Accessibility Hardening & Guided Retake | 0/TBD | Not started | - |
