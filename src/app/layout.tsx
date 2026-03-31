@@ -3,7 +3,7 @@ import { Header } from '@/components/Header';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MenuVoice',
+  title: 'MenuVoice - Scan a Menu',
   description: 'Voice-first menu navigation for blind and visually impaired users',
 };
 
