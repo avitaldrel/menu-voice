@@ -756,4 +756,41 @@ describe('useVoiceLoop', () => {
     expect(assistantMsg?.content).toBe('Got it, I will keep an eye out for shellfish.');
     expect(assistantMsg?.content).not.toContain('[ALLERGY:');
   });
+
+  // ─── speakWelcome tests ───────────────────────────────────────────────────
+
+  // Test 30: speakWelcome is exposed in hook return value
+  it('speakWelcome is exposed in hook return value and is a function', () => {
+    const { result } = renderHook(() => useVoiceLoop(null));
+    expect(typeof result.current.speakWelcome).toBe('function');
+  });
+
+  // Test 31: speakWelcome queues welcome message to TTS and flushes
+  it('speakWelcome queues welcome message to TTS and flushes', () => {
+    const { result } = renderHook(() => useVoiceLoop(null));
+
+    act(() => {
+      result.current.speakWelcome();
+    });
+
+    expect(mockTTSQueueText).toHaveBeenCalledWith(
+      'Welcome to MenuVoice. Tap Scan Menu to photograph a restaurant menu.',
+    );
+    expect(mockTTSFlush).toHaveBeenCalledOnce();
+  });
+
+  // Test 32: speakWelcome is a one-shot — second call is a no-op
+  it('speakWelcome is a one-shot — second call is a no-op', () => {
+    const { result } = renderHook(() => useVoiceLoop(null));
+
+    act(() => {
+      result.current.speakWelcome();
+    });
+
+    act(() => {
+      result.current.speakWelcome();
+    });
+
+    expect(mockTTSQueueText).toHaveBeenCalledTimes(1);
+  });
 });
