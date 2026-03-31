@@ -83,7 +83,10 @@ Plans:
   1. User can ask for recommendations ("something light", "what's popular") and receive relevant suggestions from the menu
   2. App remembers what was discussed in previous turns (e.g., "tell me more about the second one" works correctly)
   3. User can say "I'm deciding between the salmon and the chicken" and the app helps compare them and reach a decision
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 04-01-PLAN.md — System prompt response rules for recommendations, comparison, and decision support
 
 ### Phase 5: Allergy & Preference System
 **Goal**: User's allergies and food preferences are tracked locally and applied proactively during menu conversation
@@ -116,7 +119,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation & Menu Capture | 4/4 | Complete   | 2026-03-30 |
 | 2. Voice Interface | 5/5 | Complete | 2026-03-30 |
-| 3. Menu Exploration via Voice | 1/2 | In Progress|  |
-| 4. Smart Conversation & Decision Support | 0/TBD | Not started | - |
+| 3. Menu Exploration via Voice | 2/2 | Complete |  2026-03-30 |
+| 4. Smart Conversation & Decision Support | 0/1 | Not started | - |
 | 5. Allergy & Preference System | 0/TBD | Not started | - |
 | 6. Accessibility Hardening & Guided Retake | 0/TBD | Not started | - |
