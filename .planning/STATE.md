@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Completed 04-smart-conversation-decision-support/04-01-PLAN.md — 7 response rules for CONV-03/04/05, 2 tasks complete, ready for verification
-last_updated: "2026-03-31T00:32:20.158Z"
+status: executing
+stopped_at: Completed 05-allergy-preference-system/05-01-PLAN.md — UserProfile CRUD and allergy marker utilities, 2 tasks complete
+last_updated: "2026-03-31T02:02:08.048Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 15
+  completed_plans: 13
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** A blind person can independently understand and choose from any restaurant menu through voice conversation.
-**Current focus:** Phase 04 — smart-conversation-decision-support
+**Current focus:** Phase 05 — allergy-preference-system
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 05 (allergy-preference-system) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
 Last activity: 2026-03-31
 
 Progress: [░░░░░░░░░░] 0%
@@ -64,6 +64,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-menu-exploration-via-voice P01 | 4 | 2 tasks | 4 files |
 | Phase 03 P02 | 35 | 3 tasks | 3 files |
 | Phase 04-smart-conversation-decision-support P01 | 3 | 2 tasks | 2 files |
+| Phase 05-allergy-preference-system P01 | 14 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -107,6 +108,10 @@ Recent decisions affecting current work:
 - [Phase 03]: triggerResponse(null) for overview mode vs triggerResponse(text) for user speech — single function handles both flows
 - [Phase 03]: Page useEffect deps [state.status] only — fires exactly once on results entry, not on every voice state change
 - [Phase 04-smart-conversation-decision-support]: 7 RESPONSE RULES appended to buildSystemPrompt() for CONV-03/04/05: recommendation clarification, interest carry-forward, ordinal reference resolution, contrastive comparison with price, proactive narrowing, decisive recommendation, and single-recommendation for undecided users
+- [Phase 05-allergy-preference-system]: getDB() exported from indexeddb.ts for test cleanup via db.clear('settings') — deleteDatabase approach timed out due to open idb connection
+- [Phase 05-allergy-preference-system]: fake-indexeddb/auto imported as first line in setup.ts for global jsdom IndexedDB polyfill before any idb imports
+- [Phase 05-allergy-preference-system]: parseAllergyMarkers creates fresh regex instances per call to avoid /g flag stale lastIndex bug on repeated invocations
+- [Phase 05-allergy-preference-system]: stripMarkers adds space-before-punctuation cleanup to handle periods left after trailing marker removal
 
 ### Pending Todos
 
@@ -119,6 +124,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T00:28:20.624Z
-Stopped at: Completed 04-smart-conversation-decision-support/04-01-PLAN.md — 7 response rules for CONV-03/04/05, 2 tasks complete, ready for verification
+Last session: 2026-03-31T02:02:08.022Z
+Stopped at: Completed 05-allergy-preference-system/05-01-PLAN.md — UserProfile CRUD and allergy marker utilities, 2 tasks complete
 Resume file: None

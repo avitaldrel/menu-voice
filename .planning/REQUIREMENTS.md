@@ -31,12 +31,12 @@
 - [x] **CONV-06**: App uses full extracted menu data in conversation context (no summarization)
 
 ### Allergy & Preference Management (ALLERGY)
-- [ ] **ALLERGY-01**: User can create a profile with allergies and food preferences stored locally
-- [ ] **ALLERGY-02**: User can mention allergies/dislikes during conversation and app captures them on the fly
+- [x] **ALLERGY-01**: User can create a profile with allergies and food preferences stored locally
+- [x] **ALLERGY-02**: User can mention allergies/dislikes during conversation and app captures them on the fly
 - [ ] **ALLERGY-03**: App proactively warns when a mentioned menu item contains a known allergen or disliked ingredient
 - [ ] **ALLERGY-04**: App suggests asking the server if a dish can be made without the allergen/disliked ingredient
 - [ ] **ALLERGY-05**: App includes spoken safety disclaimer that allergy info is based on menu text and should be confirmed with staff
-- [ ] **ALLERGY-06**: Profile persists across sessions via local browser storage (IndexedDB)
+- [x] **ALLERGY-06**: Profile persists across sessions via local browser storage (IndexedDB)
 
 ### Accessibility (A11Y)
 - [ ] **A11Y-01**: All functionality accessible via voice alone — no visual interaction required
@@ -95,12 +95,12 @@
 | CONV-04 | Phase 4 | Complete |
 | CONV-05 | Phase 4 | Complete |
 | CONV-06 | Phase 3 | Complete |
-| ALLERGY-01 | Phase 5 | Pending |
-| ALLERGY-02 | Phase 5 | Pending |
+| ALLERGY-01 | Phase 5 | Complete |
+| ALLERGY-02 | Phase 5 | Complete |
 | ALLERGY-03 | Phase 5 | Pending |
 | ALLERGY-04 | Phase 5 | Pending |
 | ALLERGY-05 | Phase 5 | Pending |
-| ALLERGY-06 | Phase 5 | Pending |
+| ALLERGY-06 | Phase 5 | Complete |
 | A11Y-01 | Phase 6 | Pending |
 | A11Y-02 | Phase 6 | Pending |
 | A11Y-03 | Phase 1 | Complete |
