@@ -58,10 +58,10 @@ Source: audited from existing components and globals.css. Exactly 4 sizes and 2 
 | Label | 14px (`text-sm`) | 400 regular | 1.5 |
 | Body | 16px (`text-base`) | 400 regular | 1.5 |
 | Heading | 20px (`text-xl`) | 600 semibold | 1.2 |
-| Display | 28px (`text-2xl`) | 700 bold | 1.2 |
+| Display | 28px (`text-2xl`) | 600 semibold | 1.2 |
 
 Notes:
-- Settings page h1 uses `text-2xl font-bold` (28px/700) — maps to Display role
+- Settings page h1 uses `text-2xl font-semibold` (28px/600) — maps to Display role; Display is distinguished from Heading by size (28px vs 20px) alone
 - Settings section h2 uses `text-xl font-semibold` (20px/600) — maps to Heading role
 - Error message text uses `text-xl font-semibold` (20px/600) — urgency signalled visually within the type scale; ARIA urgency provided by `role="alert"` on ErrorState
 - New components in this phase (`AppStateAnnouncer`, `RetakeGuidance`) must use `text-base` (16px/400) for body copy and `text-xl font-semibold` (20px/600) for button labels where emphasis is needed
