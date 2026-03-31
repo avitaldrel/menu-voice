@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-accessibility-hardening-guided-retake/06-01-PLAN.md — AppState retake variant, AppStateAnnouncer, settings layout, 2 tasks complete
-last_updated: "2026-03-31T03:25:05.587Z"
+stopped_at: Completed 06-accessibility-hardening-guided-retake/06-02-PLAN.md — RetakeGuidance component, useMenuExtraction quality detection, page.tsx wired, 2 tasks complete
+last_updated: "2026-03-31T03:32:28.965Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 18
-  completed_plans: 16
+  completed_plans: 17
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-29)
 ## Current Position
 
 Phase: 06 (accessibility-hardening-guided-retake) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-03-31
 
@@ -68,6 +68,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05-allergy-preference-system P03 | 9 | 1 tasks | 2 files |
 | Phase 05-allergy-preference-system P02 | 11 | 2 tasks | 6 files |
 | Phase 06-accessibility-hardening-guided-retake P01 | 3 | 2 tasks | 6 files |
+| Phase 06-accessibility-hardening-guided-retake P02 | 15 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -122,6 +123,9 @@ Recent decisions affecting current work:
 - [Phase 05-allergy-preference-system]: spokenText (stripMarkers result) stored in conversation history — raw markers never appear in display or multi-turn context
 - [Phase 06-accessibility-hardening-guided-retake]: AppStateAnnouncer produces empty string for retake — RetakeGuidance component (Plan 02) handles retake-specific announcements
 - [Phase 06-accessibility-hardening-guided-retake]: Settings layout.tsx is server component (no use client) so Next.js App Router can export metadata for route announcer
+- [Phase 06-accessibility-hardening-guided-retake]: role=alert without aria-live — role=alert implies assertive; adding both causes VoiceOver iOS double-speak
+- [Phase 06-accessibility-hardening-guided-retake]: Attempt N: prefix for VoiceOver iOS deduplication — content must differ on each retry cycle for screen reader re-announcement
+- [Phase 06-accessibility-hardening-guided-retake]: Quality detection before IndexedDB save — low-quality extractions saved but routed to retake state; attemptCount threads through retry cycles
 
 ### Pending Todos
 
@@ -134,6 +138,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T03:25:05.575Z
-Stopped at: Completed 06-accessibility-hardening-guided-retake/06-01-PLAN.md — AppState retake variant, AppStateAnnouncer, settings layout, 2 tasks complete
+Last session: 2026-03-31T03:32:28.957Z
+Stopped at: Completed 06-accessibility-hardening-guided-retake/06-02-PLAN.md — RetakeGuidance component, useMenuExtraction quality detection, page.tsx wired, 2 tasks complete
 Resume file: None
