@@ -56,3 +56,15 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
   const db = await getDB();
   await db.put('settings', profile, 'profile');
 }
+
+/**
+ * Get current session count and increment it for next time.
+ * Uses 'settings' store with key 'sessionCount' — no DB migration needed.
+ * Returns the NEW count (1 on first visit, 2 on second, etc.)
+ */
+export async function getAndIncrementSessionCount(): Promise<number> {
+  const db = await getDB();
+  const count: number = (await db.get('settings', 'sessionCount')) ?? 0;
+  await db.put('settings', count + 1, 'sessionCount');
+  return count + 1;
+}

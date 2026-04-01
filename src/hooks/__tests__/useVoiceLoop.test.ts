@@ -99,6 +99,15 @@ const {
   };
 });
 
+const { mockRouterPush } = vi.hoisted(() => {
+  const mockRouterPush = vi.fn();
+  return { mockRouterPush };
+});
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: mockRouterPush }),
+}));
+
 vi.mock('@/lib/speech-recognition', () => ({
   isSpeechRecognitionSupported: () => mockIsSupported.value,
   SpeechManager: MockSpeechManager,
@@ -113,15 +122,17 @@ vi.mock('@/lib/thinking-chime', () => ({
   stopThinkingChime: mockStopThinkingChime,
 }));
 
-const { mockGetProfile, mockSaveProfile } = vi.hoisted(() => {
+const { mockGetProfile, mockSaveProfile, mockGetAndIncrementSessionCount } = vi.hoisted(() => {
   const mockGetProfile = vi.fn().mockResolvedValue(null);
   const mockSaveProfile = vi.fn().mockResolvedValue(undefined);
-  return { mockGetProfile, mockSaveProfile };
+  const mockGetAndIncrementSessionCount = vi.fn().mockResolvedValue(1);
+  return { mockGetProfile, mockSaveProfile, mockGetAndIncrementSessionCount };
 });
 
 vi.mock('@/lib/indexeddb', () => ({
   getProfile: mockGetProfile,
   saveProfile: mockSaveProfile,
+  getAndIncrementSessionCount: mockGetAndIncrementSessionCount,
 }));
 
 const { mockParseAllergyMarkers, mockStripMarkers } = vi.hoisted(() => {
@@ -200,6 +211,7 @@ describe('useVoiceLoop', () => {
     // Restore default implementations for indexeddb and allergy-marker mocks
     mockGetProfile.mockResolvedValue(null);
     mockSaveProfile.mockResolvedValue(undefined);
+    mockGetAndIncrementSessionCount.mockResolvedValue(1);
     mockParseAllergyMarkers.mockReturnValue({ allergies: [], dislikes: [], preferences: [] });
     mockStripMarkers.mockImplementation((text: string) => text);
   });

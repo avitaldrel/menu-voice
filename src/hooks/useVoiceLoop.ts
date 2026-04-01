@@ -1,6 +1,7 @@
 'use client';
 
 import { useReducer, useRef, useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   voiceReducer,
   initialVoiceState,
@@ -11,8 +12,13 @@ import { TTSClient } from '@/lib/tts-client';
 import { startThinkingChime, stopThinkingChime } from '@/lib/thinking-chime';
 import { ChatMessage, OVERVIEW_USER_MESSAGE } from '@/lib/chat-prompt';
 import type { Menu } from '@/lib/menu-schema';
-import { getProfile, saveProfile, type UserProfile } from '@/lib/indexeddb';
+import { getProfile, saveProfile, getAndIncrementSessionCount, type UserProfile } from '@/lib/indexeddb';
 import { parseAllergyMarkers, stripMarkers } from '@/lib/allergy-marker';
+
+const VOICE_NAV_COMMANDS = [
+  { pattern: /(open|go\s+to|take\s+me\s+to)\s+settings/i, action: 'settings' as const, confirmation: 'Opening settings.' },
+  { pattern: /(scan\s+new\s+menu|new\s+menu|scan\s+again)/i, action: 'reset' as const, confirmation: 'Starting over. Please take a new photo.' },
+];
 
 export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void): {
   voiceState: VoiceState;
@@ -29,6 +35,7 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
   speakWelcome: () => void;
   speakText: (text: string) => void;
 } {
+  const router = useRouter();
   const [voiceState, dispatch] = useReducer(voiceReducer, initialVoiceState);
   const [needsPermissionPrompt, setNeedsPermissionPrompt] = useState(true);
 
@@ -63,6 +70,13 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
     });
   }, []);
 
+  // Load and increment session count on mount (D-16, D-18)
+  useEffect(() => {
+    getAndIncrementSessionCount().then((count) => {
+      sessionCountRef.current = count;
+    });
+  }, []);
+
   // Ref for retake callback to avoid stale closures in streaming
   const onRetakeRequestedRef = useRef(onRetakeRequested);
   useEffect(() => {
@@ -74,6 +88,10 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
 
   // One-shot guard — welcome TTS only plays once per session
   const hasPlayedWelcomeRef = useRef(false);
+
+  // Session count and hint tracking (D-16, D-18)
+  const sessionCountRef = useRef<number>(0);
+  const hintGivenThisSessionRef = useRef(false);
 
   // isSupported is stable — evaluated once (SSR safe)
   const isSupported = isSpeechRecognitionSupported();
@@ -99,6 +117,22 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
+
+    // Voice command short-circuit (D-17) — before chat API call
+    if (userText) {
+      for (const cmd of VOICE_NAV_COMMANDS) {
+        if (cmd.pattern.test(userText)) {
+          ttsClientRef.current?.queueText(cmd.confirmation);
+          ttsClientRef.current?.flush();
+          if (cmd.action === 'settings') {
+            router.push('/settings');
+          } else if (cmd.action === 'reset') {
+            onRetakeRequestedRef.current?.();
+          }
+          return; // Short-circuit — do not call chat API
+        }
+      }
+    }
 
     // Build the message list for this request
     const nextMessages: ChatMessage[] =
@@ -175,7 +209,7 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
       }
       dispatch({ type: 'ERROR', message: 'Conversation error' });
     }
-  }, []);
+  }, [router]);
 
   /**
    * Trigger the proactive menu overview.
@@ -192,6 +226,34 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
     dispatch({ type: 'SPEECH_RESULT', transcript: '' });
     // Trigger the chat API call (null = overview mode, messages already primed)
     triggerResponse(null);
+
+    // Hint system (D-16, D-18) — append tutorial or contextual hint after overview
+    const count = sessionCountRef.current;
+    if (count === 1) {
+      // First session: full tutorial (spoken after overview TTS finishes)
+      setTimeout(() => {
+        ttsClientRef.current?.queueText(
+          'Welcome to MenuVoice! You can ask me about any item on the menu, get recommendations, or ask about ingredients. Just tap the microphone and speak naturally.'
+        );
+        ttsClientRef.current?.flush();
+      }, 8000); // Delay to let overview finish first
+    } else if (!hintGivenThisSessionRef.current) {
+      // Returning sessions: occasional contextual hints
+      const chance = count <= 5 ? 0.3 : count <= 10 ? 0.1 : 0.05;
+      if (Math.random() < chance) {
+        hintGivenThisSessionRef.current = true;
+        const hints = [
+          'By the way, you can say "open settings" to manage your food allergies.',
+          'Just so you know, you can say "scan new menu" to start over with a different menu.',
+          'You can ask me to compare dishes, like "what is the difference between the salmon and the chicken?"',
+        ];
+        const hint = hints[Math.floor(Math.random() * hints.length)];
+        setTimeout(() => {
+          ttsClientRef.current?.queueText(hint);
+          ttsClientRef.current?.flush();
+        }, 10000); // Longer delay for returning users
+      }
+    }
   }, [triggerResponse]);
 
   /**
