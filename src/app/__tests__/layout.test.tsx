@@ -7,9 +7,12 @@ import { Header } from '@/components/Header';
 // The skip-link and layout structure are verified via acceptance criteria grep checks.
 
 describe('Header', () => {
-  it('renders "MenuVoice" text', () => {
-    render(<Header />);
-    expect(screen.getByText('MenuVoice')).toBeInTheDocument();
+  it('renders "MenuVoice" logo with teal "Voice" accent (D-03)', () => {
+    const { container } = render(<Header />);
+    // Logo is split: "Menu" in foreground + "Voice" in teal accent span
+    expect(container.querySelector('.text-accent')).toBeInTheDocument();
+    expect(screen.getByText('Menu', { exact: false })).toBeInTheDocument();
+    expect(screen.getByText('Voice')).toBeInTheDocument();
   });
 
   it('has role="banner"', () => {
@@ -17,9 +20,9 @@ describe('Header', () => {
     expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 
-  it('has settings link with aria-label="Settings"', () => {
+  it('has settings link with descriptive aria-label (D-13)', () => {
     render(<Header />);
-    const link = screen.getByLabelText('Settings');
+    const link = screen.getByLabelText('Open Settings — manage allergies and preferences');
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', '/settings');
   });
