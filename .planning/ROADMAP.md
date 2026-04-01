@@ -120,10 +120,29 @@ Plans:
 - [x] 06-02-PLAN.md — RetakeGuidance component, useMenuExtraction quality detection, page.tsx retake flow wiring
 - [x] 06-03-PLAN.md — Welcome TTS on first interaction, VoiceOver end-to-end flow verification
 
+### Phase 7: Polish & Frontend Refinement
+**Goal**: App has a warm, restaurant-friendly visual design with smooth state transitions, all TTS uses the audio element per CLAUDE.md, voice commands enable hands-free navigation, and a hint system guides new users
+**Depends on**: Phase 6
+**Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07, D-08, D-09, D-10, D-11, D-12, D-13, D-14, D-15, D-16, D-17, D-18
+**Success Criteria** (what must be TRUE):
+  1. App uses warm cream background and teal/sage accent colors throughout
+  2. State panels fade in smoothly on transition (300ms CSS transitions)
+  3. All TTS flows through TTSClient (audio element) with zero SpeechSynthesis violations
+  4. Processing state cycles through reassuring messages visually
+  5. User can say "open settings" or "scan new menu" during conversation for hands-free navigation
+  6. First-time users hear a tutorial; returning users get decreasing-frequency contextual hints
+  7. Settings gear icon has 44px tap target and descriptive aria-label
+**Plans**: 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Warm palette design system and component color migration
+- [ ] 07-02-PLAN.md — State transitions, processing polish, and TTS bug fixes
+- [ ] 07-03-PLAN.md — Voice commands, hint system, and scan new menu
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -133,3 +152,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 4. Smart Conversation & Decision Support | 1/1 | Complete   | 2026-03-31 |
 | 5. Allergy & Preference System | 3/3 | Complete   | 2026-03-31 |
 | 6. Accessibility Hardening & Guided Retake | 3/3 | Complete   | 2026-03-31 |
+| 7. Polish & Frontend Refinement | 0/3 | Planning complete | — |
