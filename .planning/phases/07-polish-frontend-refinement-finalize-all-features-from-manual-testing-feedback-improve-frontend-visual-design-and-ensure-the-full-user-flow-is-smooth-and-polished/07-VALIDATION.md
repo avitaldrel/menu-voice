@@ -38,14 +38,12 @@ created: 2026-03-31
 
 | Task ID | Plan | Wave | Area | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|------|-----------|-------------------|-------------|--------|
-| 07-01-01 | 01 | 1 | globals.css palette | visual | Manual review | N/A | pending |
-| 07-01-02 | 01 | 1 | layout.tsx bg class | unit | `npm test` | layout.test.tsx | pending |
-| 07-02-01 | 02 | 1 | TTSClient fade-stop | unit | `npm test` | tts-client.test.ts | pending |
-| 07-02-02 | 02 | 1 | ProcessingState cycling | unit | `npm test` | ProcessingState.test.tsx | pending |
-| 07-03-01 | 03 | 2 | Voice command routing | unit | `npm test` | useVoiceLoop.test.ts | pending |
-| 07-03-02 | 03 | 2 | IndexedDB session count | unit | `npm test` | indexeddb-profile.test.ts | pending |
-| 07-04-01 | 04 | 2 | VoiceButton accent | unit | `npm test` | VoiceButton.test.tsx | pending |
-| 07-04-02 | 04 | 2 | Header settings icon | unit | `npm test` | layout.test.tsx | pending |
+| 07-01-01 | 01 | 1 | globals.css palette, layout.tsx body, Header updates | unit | `npm test` | layout.test.tsx | pending |
+| 07-01-02 | 01 | 1 | VoiceButton accent, ScanButton variant, MenuSummary scroll cap, RetakeGuidance warning palette | unit | `npm test` | VoiceButton.test.tsx, ScanButton.test.tsx, MenuSummary.test.tsx, RetakeGuidance.test.tsx | pending |
+| 07-02-01 | 02 | 2 | FadePanel, ProcessingState cycling | unit | `npm test` | ProcessingState.test.tsx | pending |
+| 07-02-02 | 02 | 2 | TTSClient fade-stop, SpeechSynthesis violation fixes | unit | `npm test` | tts-client.test.ts | pending |
+| 07-03-01 | 03 | 3 | Voice command routing, IndexedDB session count, hint system | unit | `npm test` | useVoiceLoop.test.ts, indexeddb-profile.test.ts | pending |
+| 07-03-02 | 03 | 3 | Voice command wiring, session count tests, voice command tests | unit | `npm test` | useVoiceLoop.test.ts, indexeddb-profile.test.ts | pending |
 
 *Status: pending · green · red · flaky*
 
@@ -67,6 +65,7 @@ Existing infrastructure covers all phase requirements. No new test framework or 
 | iOS Safari welcome TTS | D-11 | Device-specific | Test on real iOS Safari with VoiceOver |
 | TTS fade-out on interrupt | D-10 | Audio behavior | Tap during speech, verify graceful fade |
 | Pulsing status messages | D-08 | Visual animation | Trigger extraction, verify message cycling |
+| MenuSummary scrollable during voice conversation | D-15 | Layout behavior | With large menu, verify VoiceButton stays visible |
 
 ---
 
