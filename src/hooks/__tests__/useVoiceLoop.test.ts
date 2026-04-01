@@ -805,4 +805,100 @@ describe('useVoiceLoop', () => {
 
     expect(mockTTSQueueText).toHaveBeenCalledTimes(1);
   });
+
+  // ─── Voice command routing tests ─────────────────────────────────────────
+
+  describe('voice command routing', () => {
+    it('routes "open settings" to /settings without calling chat API', async () => {
+      const fetchMock = makeFetchMock(['should not be called']);
+      vi.stubGlobal('fetch', fetchMock);
+
+      const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+      act(() => {
+        result.current.startListening();
+      });
+
+      await act(async () => {
+        result.current.handleTextInput('open settings');
+      });
+
+      expect(mockRouterPush).toHaveBeenCalledWith('/settings');
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('routes "go to settings" to /settings', async () => {
+      const fetchMock = makeFetchMock(['should not be called']);
+      vi.stubGlobal('fetch', fetchMock);
+
+      const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+      act(() => {
+        result.current.startListening();
+      });
+
+      await act(async () => {
+        result.current.handleTextInput('go to settings');
+      });
+
+      expect(mockRouterPush).toHaveBeenCalledWith('/settings');
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('routes "scan new menu" to RESET via onRetakeRequested', async () => {
+      const fetchMock = makeFetchMock(['should not be called']);
+      vi.stubGlobal('fetch', fetchMock);
+      const onRetakeRequested = vi.fn();
+
+      const { result } = renderHook(() => useVoiceLoop(testMenu, onRetakeRequested));
+
+      act(() => {
+        result.current.startListening();
+      });
+
+      await act(async () => {
+        result.current.handleTextInput('scan new menu');
+      });
+
+      expect(onRetakeRequested).toHaveBeenCalledOnce();
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('does not route normal speech as commands — normal question goes to chat API', async () => {
+      const fetchMock = makeFetchMock(['The seating settings are comfortable.']);
+      vi.stubGlobal('fetch', fetchMock);
+
+      const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+      act(() => {
+        result.current.startListening();
+      });
+
+      await act(async () => {
+        result.current.handleTextInput('what are the settings for seating');
+      });
+
+      // router.push should NOT have been called — this is a normal question
+      expect(mockRouterPush).not.toHaveBeenCalled();
+      // fetch SHOULD have been called — normal chat API path
+      expect(fetchMock).toHaveBeenCalledWith('/api/chat', expect.anything());
+    });
+
+    it('speaks TTS confirmation before navigating to settings', async () => {
+      vi.stubGlobal('fetch', vi.fn());
+
+      const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+      act(() => {
+        result.current.startListening();
+      });
+
+      await act(async () => {
+        result.current.handleTextInput('open settings');
+      });
+
+      expect(mockTTSQueueText).toHaveBeenCalledWith('Opening settings.');
+      expect(mockTTSFlush).toHaveBeenCalled();
+    });
+  });
 });

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 // @ts-expect-error – internal export used for test cleanup only
 import { getDB } from '@/lib/indexeddb';
-import { getProfile, saveProfile } from '@/lib/indexeddb';
+import { getProfile, saveProfile, getAndIncrementSessionCount } from '@/lib/indexeddb';
 
 // Helper: clear the settings store between tests to ensure fresh state
 // Uses the same getDB() that indexeddb.ts uses (includes upgrade handler)
@@ -59,5 +59,32 @@ describe('UserProfile IndexedDB CRUD', () => {
     expect(result?.allergies).toEqual([]);
     expect(result?.preferences).toEqual([]);
     expect(result?.dislikes).toEqual([]);
+  });
+});
+
+describe('getAndIncrementSessionCount', () => {
+  beforeEach(async () => {
+    const db = await getDB();
+    await db.clear('settings');
+  });
+
+  it('returns 1 on first call', async () => {
+    const count = await getAndIncrementSessionCount();
+    expect(count).toBe(1);
+  });
+
+  it('returns 2 on second call', async () => {
+    await getAndIncrementSessionCount();
+    const count = await getAndIncrementSessionCount();
+    expect(count).toBe(2);
+  });
+
+  it('returns incrementing values on consecutive calls', async () => {
+    const first = await getAndIncrementSessionCount();
+    const second = await getAndIncrementSessionCount();
+    const third = await getAndIncrementSessionCount();
+    expect(first).toBe(1);
+    expect(second).toBe(2);
+    expect(third).toBe(3);
   });
 });
