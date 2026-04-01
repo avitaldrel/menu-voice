@@ -16,6 +16,7 @@ import { MicPermissionPrompt } from '@/components/MicPermissionPrompt';
 import { TextInputFallback } from '@/components/TextInputFallback';
 import { RetakeGuidance } from '@/components/RetakeGuidance';
 import { AppStateAnnouncer } from '@/components/AppStateAnnouncer';
+import { FadePanel } from '@/components/FadePanel';
 
 const initialState: AppState = { status: 'welcome' };
 
@@ -209,32 +210,37 @@ export default function HomePage() {
 
       {/* Welcome state: one giant start button */}
       {state.status === 'welcome' && (
-        <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 120px)' }}>
-          <button
-            onClick={handleStart}
-            className="w-full max-w-md min-h-[200px] text-4xl font-bold bg-accent text-accent-foreground rounded-3xl shadow-2xl active:scale-[0.97] active:bg-accent-hover transition-all focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-accent"
-            aria-label="Scan My Menu — tap to begin"
-          >
-            Scan My Menu
-          </button>
-        </div>
+        <FadePanel duration={400}>
+          <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 120px)' }}>
+            <button
+              onClick={handleStart}
+              className="w-full max-w-md min-h-[200px] text-4xl font-bold bg-accent text-accent-foreground rounded-3xl shadow-2xl active:scale-[0.97] active:bg-accent-hover transition-all focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-accent"
+              aria-label="Scan My Menu — tap to begin"
+            >
+              Scan My Menu
+            </button>
+          </div>
+        </FadePanel>
       )}
 
       {/* Idle state: waiting for camera — shows scan button as fallback */}
       {state.status === 'idle' && (
-        <div className="flex flex-col items-center gap-8 pt-12">
-          <div className="text-center space-y-2">
-            <p className="text-2xl font-semibold">Take a photo of your menu</p>
-            <p className="text-muted-foreground">Point your camera at the menu and snap a picture</p>
+        <FadePanel>
+          <div className="flex flex-col items-center gap-8 pt-12">
+            <div className="text-center space-y-2">
+              <p className="text-2xl font-semibold">Take a photo of your menu</p>
+              <p className="text-muted-foreground">Point your camera at the menu and snap a picture</p>
+            </div>
+            <div className="w-full max-w-sm">
+              <ScanButton onFilesSelected={handleIdleScan} />
+            </div>
           </div>
-          <div className="w-full max-w-sm">
-            <ScanButton onFilesSelected={handleIdleScan} />
-          </div>
-        </div>
+        </FadePanel>
       )}
 
       {/* Results state: menu summary + voice interface + scan again button */}
       {state.status === 'results' && (
+        <FadePanel>
         <div className="space-y-6">
           {/* D-15: Cap MenuSummary height so VoiceButton stays accessible without scrolling */}
           <div className="max-h-[40vh] overflow-y-auto rounded-xl">
@@ -278,25 +284,30 @@ export default function HomePage() {
             />
           </div>
         </div>
+        </FadePanel>
       )}
 
       {/* Retake state: guided retake UI with ARIA alert, ScanButton, and conditional proceed button */}
       {state.status === 'retake' && (
-        <RetakeGuidance
-          guidance={state.guidance}
-          attemptCount={state.attemptCount}
-          onRetake={handleRetake}
-          onProceed={() => dispatch({ type: 'PROCEED_ANYWAY' })}
-          onVoiceResponse={handleRetakeVoiceListen}
-        />
+        <FadePanel duration={200}>
+          <RetakeGuidance
+            guidance={state.guidance}
+            attemptCount={state.attemptCount}
+            onRetake={handleRetake}
+            onProceed={() => dispatch({ type: 'PROCEED_ANYWAY' })}
+            onVoiceResponse={handleRetakeVoiceListen}
+          />
+        </FadePanel>
       )}
 
       {/* Error state: error message + retry */}
       {state.status === 'error' && (
-        <ErrorState
-          message={state.message}
-          onRetry={() => dispatch({ type: 'RETRY' })}
-        />
+        <FadePanel duration={200}>
+          <ErrorState
+            message={state.message}
+            onRetry={() => dispatch({ type: 'RETRY' })}
+          />
+        </FadePanel>
       )}
     </div>
   );
