@@ -5,9 +5,11 @@ import { useRef } from 'react';
 interface ScanButtonProps {
   onFilesSelected: (files: File[]) => void;
   disabled?: boolean;
+  variant?: 'primary' | 'secondary';
+  label?: string;
 }
 
-export function ScanButton({ onFilesSelected, disabled }: ScanButtonProps) {
+export function ScanButton({ onFilesSelected, disabled, variant = 'primary', label = 'Scan Menu' }: ScanButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -19,15 +21,21 @@ export function ScanButton({ onFilesSelected, disabled }: ScanButtonProps) {
     }
   }
 
+  const primaryClasses =
+    'w-full min-h-[72px] text-2xl font-semibold bg-accent text-accent-foreground rounded-2xl shadow-lg hover:shadow-xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 active:bg-accent-hover active:scale-[0.98] transition-all';
+
+  const secondaryClasses =
+    'w-full min-h-[48px] text-base font-normal bg-muted text-foreground border border-muted-foreground/30 rounded-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 active:scale-[0.98] transition-all';
+
   return (
     <>
       <button
         onClick={() => inputRef.current?.click()}
         disabled={disabled}
-        className="w-full min-h-[56px] text-xl font-semibold bg-black text-white rounded-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-50 active:bg-gray-800 transition-colors"
-        aria-label="Scan Menu — tap to photograph a restaurant menu"
+        className={variant === 'primary' ? primaryClasses : secondaryClasses}
+        aria-label={`${label} — tap to photograph a restaurant menu`}
       >
-        Scan Menu
+        {label}
       </button>
       <input
         ref={inputRef}

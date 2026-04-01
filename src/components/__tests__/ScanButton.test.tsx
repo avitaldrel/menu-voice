@@ -34,10 +34,33 @@ describe('ScanButton', () => {
     expect(input).toHaveAttribute('accept', 'image/*');
   });
 
-  it('button has min-h-[56px] class for touch target (A11Y-03)', () => {
+  it('primary variant button has min-h-[72px] class for touch target (A11Y-03)', () => {
     render(<ScanButton onFilesSelected={vi.fn()} />);
     const button = screen.getByRole('button');
-    expect(button.className).toContain('min-h-[56px]');
+    expect(button.className).toContain('min-h-[72px]');
+  });
+
+  it('secondary variant button has min-h-[48px] class for touch target (A11Y-03)', () => {
+    render(<ScanButton onFilesSelected={vi.fn()} variant="secondary" />);
+    const button = screen.getByRole('button');
+    expect(button.className).toContain('min-h-[48px]');
+  });
+
+  it('renders with custom label prop', () => {
+    render(<ScanButton onFilesSelected={vi.fn()} label="Scan New Menu" />);
+    expect(screen.getByRole('button', { name: /scan new menu/i })).toBeInTheDocument();
+  });
+
+  it('primary variant uses accent colors (D-01)', () => {
+    render(<ScanButton onFilesSelected={vi.fn()} variant="primary" />);
+    const button = screen.getByRole('button');
+    expect(button.className).toContain('bg-accent');
+  });
+
+  it('secondary variant uses muted colors (D-04 subdued secondary)', () => {
+    render(<ScanButton onFilesSelected={vi.fn()} variant="secondary" />);
+    const button = screen.getByRole('button');
+    expect(button.className).toContain('bg-muted');
   });
 
   it('file input is visually hidden with sr-only and aria-hidden', () => {

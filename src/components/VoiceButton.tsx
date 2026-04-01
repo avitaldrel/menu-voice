@@ -18,21 +18,21 @@ const ARIA_LABELS: Record<VoiceState['status'], string> = {
 
 function getButtonClasses(status: VoiceState['status']): string {
   const base =
-    'w-20 h-20 rounded-full flex items-center justify-center ' +
-    'focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-black ' +
+    'w-24 h-24 rounded-full flex items-center justify-center ' +
+    'focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent ' +
     'transition-colors';
 
   switch (status) {
     case 'idle':
-      return `${base} bg-black text-white`;
+      return `${base} bg-accent text-accent-foreground`;
     case 'listening':
-      return `${base} bg-black text-white ring-4 ring-blue-600 ring-offset-2 animate-pulse`;
+      return `${base} bg-accent text-accent-foreground ring-4 ring-accent ring-offset-2 animate-pulse`;
     case 'processing':
-      return `${base} bg-gray-400 text-white`;
+      return `${base} bg-muted text-muted-foreground`;
     case 'speaking':
-      return `${base} bg-gray-400 text-white`;
+      return `${base} bg-muted text-muted-foreground`;
     case 'error':
-      return `${base} bg-gray-200 text-gray-600`;
+      return `${base} bg-muted text-muted-foreground/60`;
   }
 }
 
@@ -50,8 +50,8 @@ export function VoiceButton({ status, onTap, disabled }: VoiceButtonProps) {
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="32"
-        height="32"
+        width="40"
+        height="40"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

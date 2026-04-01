@@ -16,15 +16,15 @@ export function TranscriptDisplay({
   return (
     <div
       aria-live="off"
-      className="bg-gray-50 rounded-lg p-4 max-h-48 overflow-y-auto"
+      className="bg-muted rounded-xl p-4 max-h-48 overflow-y-auto"
     >
       {userTranscript && (
-        <p className="text-base font-normal text-gray-900">
+        <p className="text-base font-normal text-foreground">
           <span className="font-semibold">You:</span> {userTranscript}
         </p>
       )}
       {assistantResponse && (
-        <p className="text-base font-normal text-gray-700 mt-2">
+        <p className="text-base font-normal text-foreground mt-2">
           {assistantResponse}
         </p>
       )}

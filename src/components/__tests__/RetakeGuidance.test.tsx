@@ -72,9 +72,9 @@ describe('RetakeGuidance', () => {
     expect(btn.getAttribute('aria-label')).toBe('Proceed with partial menu data');
   });
 
-  it('visible guidance panel has className containing "text-yellow-800" and "bg-yellow-50"', () => {
+  it('visible guidance panel uses warm warning palette (D-14)', () => {
     render(<RetakeGuidance {...defaultProps} />);
-    const panel = document.querySelector('.text-yellow-800.bg-yellow-50');
+    const panel = document.querySelector('.text-warning-text.bg-warning-surface');
     expect(panel).not.toBeNull();
   });
 

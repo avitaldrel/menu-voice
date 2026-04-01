@@ -67,19 +67,19 @@ describe('VoiceButton', () => {
     expect(screen.getByRole('button')).not.toBeDisabled();
   });
 
-  it('has bg-black class for idle state', () => {
+  it('has bg-accent class for idle state (D-01 teal accent)', () => {
     render(<VoiceButton status="idle" onTap={vi.fn()} />);
-    expect(screen.getByRole('button')).toHaveClass('bg-black');
+    expect(screen.getByRole('button')).toHaveClass('bg-accent');
   });
 
-  it('has bg-gray-400 class for processing state', () => {
+  it('has bg-muted class for processing state (warm muted)', () => {
     render(<VoiceButton status="processing" onTap={vi.fn()} />);
-    expect(screen.getByRole('button')).toHaveClass('bg-gray-400');
+    expect(screen.getByRole('button')).toHaveClass('bg-muted');
   });
 
-  it('has bg-gray-200 class for error state', () => {
+  it('has bg-muted class for error state (warm muted, subdued)', () => {
     render(<VoiceButton status="error" onTap={vi.fn()} />);
-    expect(screen.getByRole('button')).toHaveClass('bg-gray-200');
+    expect(screen.getByRole('button')).toHaveClass('bg-muted');
   });
 
   it('respects explicit disabled prop', () => {
@@ -94,11 +94,11 @@ describe('VoiceButton', () => {
     expect(svg).toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('has 80px circle classes (w-20 h-20 rounded-full)', () => {
+  it('has 96px circle classes (w-24 h-24 rounded-full)', () => {
     render(<VoiceButton status="idle" onTap={vi.fn()} />);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('w-20');
-    expect(button).toHaveClass('h-20');
+    expect(button).toHaveClass('w-24');
+    expect(button).toHaveClass('h-24');
     expect(button).toHaveClass('rounded-full');
   });
 });
