@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-04-01T01:48:22.291Z"
+stopped_at: Completed 07-02-PLAN.md
+last_updated: "2026-04-01T01:56:04.237Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 21
-  completed_plans: 19
+  completed_plans: 20
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-29)
 ## Current Position
 
 Phase: 07 (polish-frontend-refinement-finalize-all-features-from-manual-testing-feedback-improve-frontend-visual-design-and-ensure-the-full-user-flow-is-smooth-and-polished) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-04-01
 
@@ -71,6 +71,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06-accessibility-hardening-guided-retake P02 | 15 | 2 tasks | 5 files |
 | Phase 06-accessibility-hardening-guided-retake P03 | 5 | 2 tasks | 3 files |
 | Phase 07 P01 | 11 | 2 tasks | 16 files |
+| Phase 07 P02 | 5 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,8 @@ Recent decisions affecting current work:
 - [Phase 06-accessibility-hardening-guided-retake]: speakWelcome chained to first ScanButton tap (user gesture) for iOS Safari autoplay compliance; hasPlayedWelcomeRef one-shot guard prevents repeats; TTSClient audio element used per CLAUDE.md hard constraint
 - [Phase 07]: OKLCH @theme tokens replace hex :root vars — Tailwind v4 CSS-first, no tailwind.config.js
 - [Phase 07]: ScanButton variant prop (primary/secondary) enables single component for hero and subdued use cases
+- [Phase 07]: startListening() MUST be called before speakWelcome() — SPEECH_RESULT is a no-op in idle state; state machine must be in listening first
+- [Phase 07]: RetakeGuidance speakText prop is optional for backward compatibility with existing tests
 
 ### Roadmap Evolution
 
@@ -147,6 +150,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-01T01:48:22.280Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-04-01T01:56:04.209Z
+Stopped at: Completed 07-02-PLAN.md
 Resume file: None
