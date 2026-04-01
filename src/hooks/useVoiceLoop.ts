@@ -14,7 +14,7 @@ import type { Menu } from '@/lib/menu-schema';
 import { getProfile, saveProfile, type UserProfile } from '@/lib/indexeddb';
 import { parseAllergyMarkers, stripMarkers } from '@/lib/allergy-marker';
 
-export function useVoiceLoop(menu: Menu | null): {
+export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void): {
   voiceState: VoiceState;
   startListening: () => void;
   stopListening: () => void;
@@ -27,6 +27,7 @@ export function useVoiceLoop(menu: Menu | null): {
   triggerOverview: () => void;
   conversationMessages: ChatMessage[];
   speakWelcome: () => void;
+  speakText: (text: string) => void;
 } {
   const [voiceState, dispatch] = useReducer(voiceReducer, initialVoiceState);
   const [needsPermissionPrompt, setNeedsPermissionPrompt] = useState(true);
@@ -61,6 +62,12 @@ export function useVoiceLoop(menu: Menu | null): {
       profileRef.current = p;
     });
   }, []);
+
+  // Ref for retake callback to avoid stale closures in streaming
+  const onRetakeRequestedRef = useRef(onRetakeRequested);
+  useEffect(() => {
+    onRetakeRequestedRef.current = onRetakeRequested;
+  }, [onRetakeRequested]);
 
   // AbortController for cancelling in-flight fetch requests
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -124,9 +131,12 @@ export function useVoiceLoop(menu: Menu | null): {
         ttsClientRef.current?.queueText(chunk);
       }
 
+      // Check for retake marker before stripping
+      const hasRetakeMarker = /\[RETAKE\]/i.test(fullResponse);
+
       // Extract markers from the full assembled response
       const extracted = parseAllergyMarkers(fullResponse);
-      const spokenText = stripMarkers(fullResponse);
+      const spokenText = stripMarkers(fullResponse).replace(/\[RETAKE\]/gi, '').trim();
 
       ttsClientRef.current?.flush();
 
@@ -152,6 +162,12 @@ export function useVoiceLoop(menu: Menu | null): {
       ];
       messagesRef.current = updatedMessages;
       setConversationMessages([...updatedMessages]);
+
+      // If Claude confirmed a retake, reset to idle after TTS finishes
+      if (hasRetakeMarker && onRetakeRequestedRef.current) {
+        // Small delay to let TTS start playing the confirmation before resetting
+        setTimeout(() => onRetakeRequestedRef.current?.(), 2000);
+      }
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
         // Intentional cancel — silent
@@ -278,6 +294,16 @@ export function useVoiceLoop(menu: Menu | null): {
   }, []);
 
   /**
+   * Speak arbitrary text through TTSClient (audio element) per CLAUDE.md.
+   * Used for processing reminders and RetakeGuidance TTS.
+   */
+  const speakText = useCallback((text: string) => {
+    ensureInstances();
+    ttsClientRef.current?.queueText(text);
+    ttsClientRef.current?.flush();
+  }, [ensureInstances]);
+
+  /**
    * Thinking chime effect: starts on processing state, stops on all other states.
    */
   useEffect(() => {
@@ -339,5 +365,6 @@ export function useVoiceLoop(menu: Menu | null): {
     triggerOverview,
     conversationMessages,
     speakWelcome,
+    speakText,
   };
 }

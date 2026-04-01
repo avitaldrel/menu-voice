@@ -107,14 +107,41 @@ export class TTSClient {
   }
 
   /**
-   * Stop playback, cancel synthesis, revoke blob URL, clear queue.
+   * Ramp volume to 0 over 200ms, then call onDone.
+   * Used by stop() to avoid abrupt audio cut-off on user interrupt (D-10).
+   */
+  private fadeAndStop(onDone: () => void): void {
+    const audio = this.audioElement;
+    const startVol = audio.volume;
+    if (startVol === 0 || !this.isPlaying) {
+      onDone();
+      return;
+    }
+    const STEPS = 10;
+    const STEP_MS = 20; // 10 steps x 20ms = 200ms fade
+    let step = 0;
+    const id = setInterval(() => {
+      step++;
+      audio.volume = Math.max(0, startVol * (1 - step / STEPS));
+      if (step >= STEPS) {
+        clearInterval(id);
+        audio.volume = 1; // reset for next playback
+        onDone();
+      }
+    }, STEP_MS);
+  }
+
+  /**
+   * Stop playback with 200ms volume fade, cancel synthesis, revoke blob URL, clear queue.
    */
   stop(): void {
-    this.audioElement.pause();
-    if (this.currentBlobUrl) {
-      URL.revokeObjectURL(this.currentBlobUrl);
-      this.currentBlobUrl = null;
-    }
+    this.fadeAndStop(() => {
+      this.audioElement.pause();
+      if (this.currentBlobUrl) {
+        URL.revokeObjectURL(this.currentBlobUrl);
+        this.currentBlobUrl = null;
+      }
+    });
     window.speechSynthesis?.cancel();
     this.queue = [];
     this.buffer = '';

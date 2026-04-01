@@ -9,46 +9,26 @@ interface RetakeGuidanceProps {
   onRetake: (files: File[]) => void;
   onProceed: () => void;
   onVoiceResponse?: () => void;
+  speakText?: (text: string) => void;
 }
 
-export function RetakeGuidance({ guidance, attemptCount, onRetake, onProceed, onVoiceResponse }: RetakeGuidanceProps) {
+export function RetakeGuidance({ guidance, attemptCount, onRetake, onProceed, onVoiceResponse, speakText }: RetakeGuidanceProps) {
   // Deduplication prefix for VoiceOver iOS (RESEARCH.md Pitfall 3 — content must change per announcement)
   const announcementText = attemptCount > 1 ? `Attempt ${attemptCount}: ${guidance}` : guidance;
 
   // Speak the retake guidance + ask "retake or continue?" then listen for voice response
   const spokenRef = useRef(false);
   useEffect(() => {
-    if (!spokenRef.current) {
+    if (!spokenRef.current && speakText) {
       spokenRef.current = true;
       const fullMessage = `${announcementText} Would you like to retake the picture, or continue with what I have?`;
-      fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: fullMessage }),
-      })
-        .then(res => {
-          if (res.ok) return res.blob();
-          throw new Error('TTS failed');
-        })
-        .then(blob => {
-          const url = URL.createObjectURL(blob);
-          const audio = new Audio(url);
-          audio.onended = () => {
-            URL.revokeObjectURL(url);
-            // Start listening for voice response after TTS finishes
-            if (onVoiceResponse) onVoiceResponse();
-          };
-          audio.play();
-        })
-        .catch(() => {
-          const utterance = new SpeechSynthesisUtterance(fullMessage);
-          utterance.onend = () => {
-            if (onVoiceResponse) onVoiceResponse();
-          };
-          speechSynthesis.speak(utterance);
-        });
+      speakText(fullMessage);
+      // Start voice response listener after a delay for TTS to finish
+      setTimeout(() => {
+        if (onVoiceResponse) onVoiceResponse();
+      }, 5000);
     }
-  }, [announcementText, onVoiceResponse]);
+  }, [announcementText, speakText, onVoiceResponse]);
 
   return (
     <div className="flex flex-col gap-4 py-6">

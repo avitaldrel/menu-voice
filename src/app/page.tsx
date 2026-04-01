@@ -39,6 +39,7 @@ export default function HomePage() {
     response,
     triggerOverview,
     speakWelcome,
+    speakText,
   } = useVoiceLoop(menu, handleVoiceRetake);
 
   // Hidden file input ref for auto-opening camera after welcome TTS
@@ -47,33 +48,13 @@ export default function HomePage() {
   // Welcome screen: big button tap → mic on + TTS speaks → camera auto-opens
   const handleStart = useCallback(() => {
     dispatch({ type: 'START' });
-    startListening();
-    // Speak the prompt, then auto-open camera when done
-    fetch('/api/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: 'Welcome to MenuVoice. Please take a picture of the menu.' }),
-    })
-      .then(res => {
-        if (res.ok) return res.blob();
-        throw new Error('TTS failed');
-      })
-      .then(blob => {
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        audio.onended = () => {
-          URL.revokeObjectURL(url);
-          cameraInputRef.current?.click();
-        };
-        audio.play();
-      })
-      .catch(() => {
-        // Fallback: browser speech then open camera
-        const utterance = new SpeechSynthesisUtterance('Welcome to MenuVoice. Please take a picture of the menu.');
-        utterance.onend = () => cameraInputRef.current?.click();
-        speechSynthesis.speak(utterance);
-      });
-  }, []);
+    startListening(); // MUST be called first — moves voice state from idle to listening
+    speakWelcome();   // Now SPEECH_RESULT works because voice state is listening
+    // Camera auto-opens after a delay (TTS welcome is ~3-4 seconds)
+    setTimeout(() => {
+      cameraInputRef.current?.click();
+    }, 4000);
+  }, [startListening, speakWelcome]);
 
   // Handle files from the auto-opened camera
   const handleCameraFiles = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,9 +70,7 @@ export default function HomePage() {
   useEffect(() => {
     if (state.status === 'processing') {
       processingIntervalRef.current = setInterval(() => {
-        const utterance = new SpeechSynthesisUtterance('Still reading your menu, one moment please.');
-        utterance.rate = 1.1;
-        speechSynthesis.speak(utterance);
+        speakText('Still reading your menu, one moment please.');
       }, 12000);
     } else {
       if (processingIntervalRef.current) {
@@ -105,7 +84,7 @@ export default function HomePage() {
         processingIntervalRef.current = null;
       }
     };
-  }, [state.status]);
+  }, [state.status, speakText]);
 
   // Map mic button taps to voice state transitions per UI-SPEC State Machine Interaction Contract
   const handleMicTap = useCallback(() => {
@@ -296,6 +275,7 @@ export default function HomePage() {
             onRetake={handleRetake}
             onProceed={() => dispatch({ type: 'PROCEED_ANYWAY' })}
             onVoiceResponse={handleRetakeVoiceListen}
+            speakText={speakText}
           />
         </FadePanel>
       )}

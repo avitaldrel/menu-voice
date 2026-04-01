@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { splitSentences, TTSClient } from '../tts-client';
 
 // Mock fetch globally
@@ -216,7 +216,7 @@ describe('TTSClient', () => {
     );
   });
 
-  it('stop() pauses audio, cancels speechSynthesis, and clears queue', async () => {
+  it('stop() cancels speechSynthesis and clears queue immediately', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       blob: () => Promise.resolve(new Blob(['audio'], { type: 'audio/mpeg' })),
@@ -229,8 +229,34 @@ describe('TTSClient', () => {
 
     client.stop();
 
-    expect(mockAudioInstance.pause).toHaveBeenCalled();
+    // speechSynthesis.cancel() and queue clear happen immediately
     expect(window.speechSynthesis.cancel).toHaveBeenCalled();
+  });
+
+  it('stop() pauses audio after 200ms fade when playing', async () => {
+    vi.useFakeTimers();
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: () => Promise.resolve(new Blob(['audio'], { type: 'audio/mpeg' })),
+    });
+
+    // Mark as playing so fade triggers
+    // Access private isPlaying via type assertion
+    const clientAny = client as unknown as { isPlaying: boolean };
+    clientAny.isPlaying = true;
+
+    client.stop();
+
+    // Before fade completes, pause should not have been called
+    expect(mockAudioInstance.pause).not.toHaveBeenCalled();
+
+    // Advance timers past the 200ms fade (10 steps x 20ms)
+    vi.advanceTimersByTime(220);
+
+    expect(mockAudioInstance.pause).toHaveBeenCalled();
+
+    vi.useRealTimers();
   });
 
   it('calls onSpeakingStart on first sentence', async () => {
