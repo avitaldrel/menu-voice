@@ -19,7 +19,7 @@ function VisualCue({ status }: { status: VoiceState['status'] }) {
     return (
       <span
         aria-hidden="true"
-        className="inline-block w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin align-middle ml-1"
+        className="inline-block w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin align-middle ml-1"
       />
     );
   }
@@ -28,15 +28,15 @@ function VisualCue({ status }: { status: VoiceState['status'] }) {
     return (
       <span aria-hidden="true" className="inline-flex items-center gap-0.5 ml-1 align-middle">
         <span
-          className="w-1.5 h-1.5 rounded-full bg-green-600 animate-bounce"
+          className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce"
           style={{ animationDelay: '0ms' }}
         />
         <span
-          className="w-1.5 h-1.5 rounded-full bg-green-600 animate-bounce"
+          className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce"
           style={{ animationDelay: '150ms' }}
         />
         <span
-          className="w-1.5 h-1.5 rounded-full bg-green-600 animate-bounce"
+          className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce"
           style={{ animationDelay: '300ms' }}
         />
       </span>
@@ -50,11 +50,11 @@ function getLabelClasses(status: VoiceState['status']): string {
   const base = 'text-sm';
   switch (status) {
     case 'listening':
-      return `${base} text-blue-600`;
+      return `${base} text-accent`;
     case 'error':
-      return `${base} text-red-700`;
+      return `${base} text-destructive`;
     default:
-      return `${base} text-gray-600`;
+      return `${base} text-muted-foreground`;
   }
 }
 

@@ -40,10 +40,10 @@ function ProfileSection({
       <h2 id={labelId} className="text-xl font-semibold mb-1">
         {title}
       </h2>
-      <p className="text-gray-600 mb-3 text-sm">{description}</p>
+      <p className="text-muted-foreground mb-3 text-sm">{description}</p>
 
       {items.length === 0 ? (
-        <p className="text-gray-500 italic mb-3">
+        <p className="text-muted-foreground italic mb-3">
           No {title.toLowerCase()} added yet
         </p>
       ) : (
@@ -55,7 +55,7 @@ function ProfileSection({
                 type="button"
                 onClick={() => onRemove(item)}
                 aria-label={`Remove ${item}`}
-                className="min-h-[48px] px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                className="min-h-[48px] px-3 py-1 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Remove
               </button>
@@ -81,11 +81,11 @@ function ProfileSection({
           onChange={(e) => onInputChange(e.target.value)}
           placeholder={inputPlaceholder}
           aria-label={inputLabel}
-          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+          className="flex-1 border border-muted-foreground/30 rounded-lg px-3 py-2 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         />
         <button
           type="submit"
-          className="min-h-[48px] bg-black text-white rounded-lg px-4 py-2 font-medium hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+          className="min-h-[48px] bg-accent text-accent-foreground rounded-lg px-4 py-2 font-medium hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           {inputLabel}
         </button>
@@ -135,7 +135,7 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold mb-6">Settings</h1>
 
       {loading ? (
-        <p className="text-gray-600">Loading...</p>
+        <p className="text-muted-foreground">Loading...</p>
       ) : (
         <>
           <ProfileSection
@@ -187,7 +187,7 @@ export default function SettingsPage() {
 
       <Link
         href="/"
-        className="inline-block px-4 py-2 bg-black text-white rounded-lg font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+        className="inline-block px-4 py-2 bg-muted text-foreground rounded-lg font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         Back to Home
       </Link>
