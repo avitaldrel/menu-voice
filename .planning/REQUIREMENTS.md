@@ -46,6 +46,26 @@
 - [x] **A11Y-05**: TTS output uses `<audio>` element to avoid conflict with active screen readers
 - [x] **A11Y-06**: App announces its state clearly (listening, thinking, speaking, error)
 
+### Phase 7 Design Decisions (D)
+- [x] **D-01**: Warmer aesthetic — teal/sage accent for primary actions and interactive elements
+- [x] **D-02**: Background from #fafafa to warm off-white cream tone
+- [x] **D-03**: Logo colors updated to warm/teal palette
+- [x] **D-04**: One hero action per screen — dominant button large and prominent, secondary subdued
+- [x] **D-05**: Transcript display polished with warm palette clean container
+- [x] **D-06**: Menu summary display warm aesthetic (Claude's discretion)
+- [x] **D-07**: Smooth fade/slide transitions between states (300ms CSS transitions)
+- [x] **D-08**: Pulsing status messages during extraction with smooth text transitions
+- [x] **D-09**: Auto-overview then listen — smoother transition into conversation mode
+- [x] **D-10**: TTS fade out over 200ms on interrupt, brief pause, then mic activates
+- [x] **D-11**: Welcome TTS plays on first load (iOS Safari autoplay compliance fix)
+- [x] **D-12**: Scan new menu from results state without page refresh
+- [x] **D-13**: Settings gear discoverable — 44px tap target, descriptive aria-label
+- [x] **D-14**: Retake flow clarity — clearer guidance messaging and smoother transition
+- [x] **D-15**: Menu summary accessible while in voice conversation mode
+- [x] **D-16**: Tutorial and contextual hints for new users
+- [x] **D-17**: Voice-accessible settings — say "open settings" during conversation
+- [x] **D-18**: Hints decrease in frequency over sessions
+
 ---
 
 ## v2 Requirements
@@ -107,5 +127,23 @@
 | A11Y-04 | Phase 1 | Complete |
 | A11Y-05 | Phase 2 | Complete |
 | A11Y-06 | Phase 2 | Complete |
+| D-01 | Phase 7 | Complete |
+| D-02 | Phase 7 | Complete |
+| D-03 | Phase 7 | Complete |
+| D-04 | Phase 7 | Complete |
+| D-05 | Phase 7 | Complete |
+| D-06 | Phase 7 | Complete |
+| D-07 | Phase 7 | Complete |
+| D-08 | Phase 7 | Complete |
+| D-09 | Phase 7 | Complete |
+| D-10 | Phase 7 | Complete |
+| D-11 | Phase 7 | Complete |
+| D-12 | Phase 7 | Complete |
+| D-13 | Phase 7 | Complete |
+| D-14 | Phase 7 | Complete |
+| D-15 | Phase 7 | Complete |
+| D-16 | Phase 7 | Complete |
+| D-17 | Phase 7 | Complete |
+| D-18 | Phase 7 | Complete |
 
-**Coverage:** 29 requirements total | 29 mapped | 0 unmapped
+**Coverage:** 47 requirements total | 47 mapped | 0 unmapped
