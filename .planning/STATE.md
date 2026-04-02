@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Completed 07-03-PLAN.md
-last_updated: "2026-04-01T02:06:57.801Z"
-last_activity: 2026-04-01
+status: executing
+stopped_at: Completed 07-04-PLAN.md
+last_updated: "2026-04-02T00:13:54.619Z"
+last_activity: 2026-04-02
 progress:
   total_phases: 7
   completed_phases: 7
-  total_plans: 21
-  completed_plans: 21
+  total_plans: 22
+  completed_plans: 22
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** A blind person can independently understand and choose from any restaurant menu through voice conversation.
-**Current focus:** Phase 07 — polish-frontend-refinement-finalize-all-features-from-manual-testing-feedback-improve-frontend-visual-design-and-ensure-the-full-user-flow-is-smooth-and-polished
+**Current focus:** Phase 07 — polish-frontend-refinement
 
 ## Current Position
 
-Phase: 07 (polish-frontend-refinement-finalize-all-features-from-manual-testing-feedback-improve-frontend-visual-design-and-ensure-the-full-user-flow-is-smooth-and-polished) — EXECUTING
-Plan: 3 of 3
-Status: Phase complete — ready for verification
-Last activity: 2026-04-01
+Phase: 07 (polish-frontend-refinement) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-04-02
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -73,6 +73,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 07 P01 | 11 | 2 tasks | 16 files |
 | Phase 07 P02 | 5 | 2 tasks | 7 files |
 | Phase 07 P03 | 8 | 2 tasks | 4 files |
+| Phase 07 P04 | 8 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,8 @@ Recent decisions affecting current work:
 - [Phase 07]: startListening() MUST be called before speakWelcome() — SPEECH_RESULT is a no-op in idle state; state machine must be in listening first
 - [Phase 07]: RetakeGuidance speakText prop is optional for backward compatibility with existing tests
 - [Phase 07]: Removed add-allergy voice command pattern (i'm allergic) — conflicts with allergy extraction via chat; phrase goes through chat API to extract allergy markers instead of routing to settings
+- [Phase 07]: Back to Home link uses bg-muted per D-04 one-hero-per-screen — secondary navigation should not compete with hero CTA
+- [Phase 07]: Phase 7 design decisions tracked as D-01 through D-18 in REQUIREMENTS.md — enables formal traceability for visual design choices
 
 ### Roadmap Evolution
 
@@ -152,6 +155,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-01T02:06:57.765Z
-Stopped at: Completed 07-03-PLAN.md
+Last session: 2026-04-02T00:13:54.569Z
+Stopped at: Completed 07-04-PLAN.md
 Resume file: None

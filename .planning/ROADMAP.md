@@ -138,7 +138,7 @@ Plans:
 - [x] 07-01-PLAN.md — Warm palette design system and component color migration
 - [x] 07-02-PLAN.md — State transitions, processing polish, and TTS bug fixes
 - [x] 07-03-PLAN.md — Voice commands, hint system, and scan new menu
-- [ ] 07-04-PLAN.md — Gap closure: complete palette migration and requirements traceability
+- [x] 07-04-PLAN.md — Gap closure: complete palette migration and requirements traceability
 
 ## Progress
 
@@ -153,4 +153,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 4. Smart Conversation & Decision Support | 1/1 | Complete   | 2026-03-31 |
 | 5. Allergy & Preference System | 3/3 | Complete   | 2026-03-31 |
 | 6. Accessibility Hardening & Guided Retake | 3/3 | Complete   | 2026-03-31 |
-| 7. Polish & Frontend Refinement | 3/4 | Gap Closure | 2026-04-01 |
+| 7. Polish & Frontend Refinement | 4/4 | Complete   | 2026-04-02 |
