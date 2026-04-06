@@ -7,6 +7,15 @@ export const maxDuration = 30;
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
+  // Validate Content-Type
+  const contentType = request.headers.get('content-type');
+  if (!contentType?.includes('application/json')) {
+    return Response.json(
+      { error: 'Content-Type must be application/json' },
+      { status: 415 }
+    );
+  }
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json(
       { error: 'ANTHROPIC_API_KEY not configured' },
@@ -32,6 +41,14 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  console.log(JSON.stringify({
+    event: 'chat_turn',
+    ip,
+    messageCount: messages.length,
+    timestamp: new Date().toISOString(),
+  }));
 
   const client = new Anthropic();
   const systemPrompt = buildSystemPrompt(menu, profile);

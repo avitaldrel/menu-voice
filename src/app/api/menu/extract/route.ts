@@ -2,10 +2,20 @@ import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 
 // Route Handler config
+export const runtime = 'edge';
 export const maxDuration = 30;
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
+  // Validate Content-Type
+  const contentType = request.headers.get('content-type');
+  if (!contentType?.includes('application/json')) {
+    return NextResponse.json(
+      { error: 'Content-Type must be application/json' },
+      { status: 415 }
+    );
+  }
+
   // Validate API key exists
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
@@ -40,6 +50,14 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  console.log(JSON.stringify({
+    event: 'menu_extract',
+    ip,
+    imageCount: images.length,
+    timestamp: new Date().toISOString(),
+  }));
 
   const client = new Anthropic();
 
@@ -98,7 +116,8 @@ Rules:
 - Price stays as a string to handle "Market Price", "$12/$18" (half/full), etc.
 - Set confidence 0-1 per item; lower for blurry or partially visible text.
 - Merge all pages into one coherent menu — no duplicate category headers.
-- Add warnings[] for any photo quality issues (blurry text, glare, partial visibility).`,
+- warnings[] is ONLY for photo quality issues that make text unreadable (blurry, too dark, glare, cut off). Do NOT add warnings about menu content like "limited availability", "seasonal", "specials", or missing restaurant name — those are not photo problems.
+- If all items are readable, warnings must be an empty array and extractionConfidence should be high (0.8+).`,
           },
         ],
       }],
