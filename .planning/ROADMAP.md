@@ -140,10 +140,27 @@ Plans:
 - [x] 07-03-PLAN.md — Voice commands, hint system, and scan new menu
 - [x] 07-04-PLAN.md — Gap closure: complete palette migration and requirements traceability
 
+### Phase 8: Vercel Production Deployment
+**Goal**: App is deployed to Vercel production with security headers, Edge Runtime on menu extraction, request validation, usage logging, and full user flow verified on a public URL
+**Depends on**: Phase 7
+**Requirements**: DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DEPLOY-05, DEPLOY-06, DEPLOY-07
+**Success Criteria** (what must be TRUE):
+  1. App is publicly accessible at a *.vercel.app URL with no authentication gate
+  2. All HTTP responses include CSP, Permissions-Policy, and standard security headers
+  3. TTS audio and microphone access are not blocked by security headers
+  4. Every API call is logged with event type, IP, and timestamp for spend monitoring
+  5. Malformed requests are rejected before processing
+  6. Full user flow works on production: scan menu, voice conversation, TTS playback, settings
+**Plans**: 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Security headers, Edge Runtime migration, request validation, usage logging
+- [ ] 08-02-PLAN.md — Deployment preparation, Vercel deploy, production smoke testing
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -154,3 +171,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 5. Allergy & Preference System | 3/3 | Complete   | 2026-03-31 |
 | 6. Accessibility Hardening & Guided Retake | 3/3 | Complete   | 2026-03-31 |
 | 7. Polish & Frontend Refinement | 4/4 | Complete   | 2026-04-02 |
+| 8. Vercel Production Deployment | 0/2 | Planning   | — |

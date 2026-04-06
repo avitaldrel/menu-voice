@@ -66,6 +66,15 @@
 - [x] **D-17**: Voice-accessible settings — say "open settings" during conversation
 - [x] **D-18**: Hints decrease in frequency over sessions
 
+### Production Deployment (DEPLOY)
+- [ ] **DEPLOY-01**: Security headers (CSP, Permissions-Policy, X-Content-Type-Options, X-Frame-Options, Referrer-Policy) on all HTTP responses
+- [ ] **DEPLOY-02**: /api/menu/extract runs on Edge Runtime for streaming timeout resilience
+- [ ] **DEPLOY-03**: All API routes validate Content-Type header and reject malformed requests with 415
+- [ ] **DEPLOY-04**: All API routes log structured JSON (event, IP, timestamp) for usage/spend monitoring via Vercel Runtime Logs
+- [ ] **DEPLOY-05**: Production build succeeds with Edge Runtime bundle within Vercel Hobby tier limits
+- [ ] **DEPLOY-06**: .env.example documents all required environment variables with setup instructions
+- [ ] **DEPLOY-07**: App is live at a public Vercel URL with full user flow working end-to-end
+
 ---
 
 ## v2 Requirements
@@ -145,5 +154,12 @@
 | D-16 | Phase 7 | Complete |
 | D-17 | Phase 7 | Complete |
 | D-18 | Phase 7 | Complete |
+| DEPLOY-01 | Phase 8 | Planned |
+| DEPLOY-02 | Phase 8 | Planned |
+| DEPLOY-03 | Phase 8 | Planned |
+| DEPLOY-04 | Phase 8 | Planned |
+| DEPLOY-05 | Phase 8 | Planned |
+| DEPLOY-06 | Phase 8 | Planned |
+| DEPLOY-07 | Phase 8 | Planned |
 
-**Coverage:** 47 requirements total | 47 mapped | 0 unmapped
+**Coverage:** 54 requirements total | 54 mapped | 0 unmapped
