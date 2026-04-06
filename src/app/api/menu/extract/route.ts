@@ -2,7 +2,6 @@ import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 
 // Route Handler config
-export const runtime = 'edge';
 export const maxDuration = 30;
 export const dynamic = 'force-dynamic';
 

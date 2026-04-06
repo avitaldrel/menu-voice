@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" phase complete \"01\")",
+      "Skill(gsd:autonomous)",
+      "Skill(gsd:ui-phase)",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(phase-03\\): complete phase execution\" --files .planning/ROADMAP.md .planning/STATE.md .planning/REQUIREMENTS.md \".planning/phases/03-menu-exploration-via-voice/03-VERIFICATION.md\")",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(phase-03\\): evolve PROJECT.md after phase completion\" --files .planning/PROJECT.md)",
+      "Bash(cd:*)",
+      "Skill(gsd:plan-phase)",
+      "Skill(gsd:add-phase)",
+      "Skill(gsd:discuss-phase)",
+      "Skill(gsd:fast)",
+      "Bash(npx next:*)",
+      "Skill(gsd:debug)",
+      "Bash(npx vitest:*)",
+      "Skill(gsd-execute-phase)"
+    ]
+  }
+}

@@ -154,7 +154,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Security headers, Edge Runtime migration, request validation, usage logging
+- [x] 08-01-PLAN.md — Security headers, Edge Runtime migration, request validation, usage logging
 - [ ] 08-02-PLAN.md — Deployment preparation, Vercel deploy, production smoke testing
 
 ## Progress
