@@ -86,6 +86,9 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
   // AbortController for cancelling in-flight fetch requests
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  // Minimum post-speech delay before recognition restarts (3 s grace period for user)
+  const postSpeakTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // One-shot guard — welcome TTS only plays once per session
   const hasPlayedWelcomeRef = useRef(false);
 
@@ -156,22 +159,55 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
+      // ttsAccum holds text not yet forwarded to TTS. We hold back from the
+      // last '[' onwards to prevent partial markers from reaching the TTS queue.
+      let ttsAccum = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
         fullResponse += chunk;
-        ttsClientRef.current?.queueText(chunk);
+        ttsAccum += chunk;
+
+        // Find the last '[' in the accumulated text. Anything before it is safe
+        // to forward to TTS (no partial marker can be lurking there). Anything
+        // from '[' onwards is withheld until we see the matching ']' or the
+        // stream ends — at which point stripMarkers removes complete markers.
+        const bracketIdx = ttsAccum.lastIndexOf('[');
+        if (bracketIdx === -1) {
+          // No '[' at all — entire accumulation is safe
+          ttsClientRef.current?.queueText(ttsAccum);
+          ttsAccum = '';
+        } else {
+          // Check if there is a complete marker already (has matching ']' after the '[')
+          const closingIdx = ttsAccum.indexOf(']', bracketIdx);
+          if (closingIdx !== -1) {
+            // The '[...]' bracket is complete — strip it then forward everything
+            const safeText = stripMarkers(ttsAccum).replace(/\[RETAKE\]/gi, '');
+            if (safeText) ttsClientRef.current?.queueText(safeText);
+            ttsAccum = '';
+          } else {
+            // Partial marker in progress — forward only text before the '['
+            const safe = ttsAccum.slice(0, bracketIdx);
+            if (safe) ttsClientRef.current?.queueText(safe);
+            ttsAccum = ttsAccum.slice(bracketIdx); // keep from '[' onwards
+          }
+        }
       }
 
-      // Check for retake marker before stripping
+      // Stream ended — check for retake marker before stripping
       const hasRetakeMarker = /\[RETAKE\]/i.test(fullResponse);
 
       // Extract markers from the full assembled response
       const extracted = parseAllergyMarkers(fullResponse);
       const spokenText = stripMarkers(fullResponse).replace(/\[RETAKE\]/gi, '').trim();
 
+      // Flush any remaining ttsAccum (marker-stripped) then signal end of stream
+      if (ttsAccum) {
+        const remaining = stripMarkers(ttsAccum).replace(/\[RETAKE\]/gi, '').trim();
+        if (remaining) ttsClientRef.current?.queueText(remaining);
+      }
       ttsClientRef.current?.flush();
 
       // Save extracted markers to profile if any found
@@ -204,7 +240,9 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
       }
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
-        // Intentional cancel — silent
+        // Intentional cancel — flush whatever was buffered before the abort so
+        // any food names already received are spoken rather than silently dropped.
+        ttsClientRef.current?.flush();
         return;
       }
       dispatch({ type: 'ERROR', message: 'Conversation error' });
@@ -218,11 +256,27 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
    */
   const triggerOverview = useCallback(() => {
     if (!menuRef.current) return;
+    // Lazy-init TTS client (ensureInstances defined later, use ref directly)
+    if (!ttsClientRef.current) {
+      ttsClientRef.current = new TTSClient({
+        onSpeakingStart: () => {
+          dispatch({ type: 'FIRST_AUDIO_READY', response: responseRef.current });
+        },
+        onSpeakingEnd: () => {
+          dispatch({ type: 'PLAYBACK_ENDED' });
+        },
+        onSentenceStart: (sentence: string) => {
+          setResponseText((prev) => (prev ? prev : sentence));
+        },
+      });
+    }
     // Prime the messages array with the overview request
     const overviewMessages: ChatMessage[] = [{ role: 'user', content: OVERVIEW_USER_MESSAGE }];
     messagesRef.current = overviewMessages;
     setConversationMessages([...overviewMessages]);
-    // Dispatch processing state with empty transcript (overview has no user speech)
+    // Ensure we're in listening state before dispatching SPEECH_RESULT
+    // (idle → listening → processing via SPEECH_RESULT)
+    dispatch({ type: 'START_LISTENING' });
     dispatch({ type: 'SPEECH_RESULT', transcript: '' });
     // Trigger the chat API call (null = overview mode, messages already primed)
     triggerResponse(null);
@@ -309,7 +363,7 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
     if (hasPlayedWelcomeRef.current) return;
     hasPlayedWelcomeRef.current = true;
     ensureInstances();
-    const welcomeText = 'Welcome to MenuVoice. Tap Scan Menu to photograph a restaurant menu.';
+    const welcomeText = 'Welcome to MenuVoice.';
     ttsClientRef.current?.queueText(welcomeText);
     ttsClientRef.current?.flush();
     dispatch({ type: 'SPEECH_RESULT', transcript: '' });
@@ -326,9 +380,14 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
   }, [ensureInstances]);
 
   /**
-   * Stop listening. Stops speech manager, TTS, chime, and aborts in-flight chat requests.
+   * Stop listening. Stops speech manager, TTS, chime, aborts in-flight chat requests,
+   * and cancels any pending post-speech restart timer.
    */
   const stopListening = useCallback(() => {
+    if (postSpeakTimerRef.current !== null) {
+      clearTimeout(postSpeakTimerRef.current);
+      postSpeakTimerRef.current = null;
+    }
     dispatch({ type: 'STOP' });
     speechManagerRef.current?.stop();
     ttsClientRef.current?.stop();
@@ -392,10 +451,9 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
       prevStatusRef.current === 'speaking' &&
       speechManagerRef.current
     ) {
-      // Auto-restart: speaking -> listening via PLAYBACK_ENDED
-      // startListening() handles the initial idle -> listening path,
-      // so we only call start() here for the post-speaking restart.
-      speechManagerRef.current.start();
+      // Auto-restart: speaking -> listening via PLAYBACK_ENDED.
+      // Start recognition immediately so the user can speak right away.
+      speechManagerRef.current?.start();
     }
     prevStatusRef.current = voiceState.status;
   }, [voiceState.status]);
@@ -405,6 +463,10 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
    */
   useEffect(() => {
     return () => {
+      if (postSpeakTimerRef.current !== null) {
+        clearTimeout(postSpeakTimerRef.current);
+        postSpeakTimerRef.current = null;
+      }
       speechManagerRef.current?.destroy();
       speechManagerRef.current = null;
       ttsClientRef.current?.destroy();

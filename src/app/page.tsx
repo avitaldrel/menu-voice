@@ -65,10 +65,12 @@ export default function HomePage() {
     e.target.value = '';
   }, [extract]);
 
-  // Periodic TTS reminder during menu extraction so the user knows the app is still working
+  // Spoken confirmation + periodic reminder during menu extraction
   const processingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => {
     if (state.status === 'processing') {
+      // Immediate confirmation so the user knows their photo was received
+      speakText('Got it, reading your menu now.');
       processingIntervalRef.current = setInterval(() => {
         speakText('Still reading your menu, one moment please.');
       }, 12000);
@@ -135,14 +137,19 @@ export default function HomePage() {
   }, [state, extract]);
 
   // MENU-05: Proactive overview — triggered once when app enters results state.
-  // Replaces Phase 2 D-01 auto-start. Voice loop begins listening automatically
-  // after overview TTS finishes (PLAYBACK_ENDED -> listening via state machine).
+  // Fires when voiceState is idle or listening (after welcome TTS finishes).
+  const hasTriggeredOverviewRef = useRef(false);
   useEffect(() => {
-    if (state.status === 'results' && voiceState.status === 'idle') {
+    if (state.status !== 'results') {
+      hasTriggeredOverviewRef.current = false;
+      return;
+    }
+    if (!hasTriggeredOverviewRef.current &&
+        (voiceState.status === 'idle' || voiceState.status === 'listening')) {
+      hasTriggeredOverviewRef.current = true;
       triggerOverview();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.status]);
+  }, [state.status, voiceState.status, triggerOverview]);
 
   // Tap anywhere on screen to interrupt TTS when speaking
   const handleScreenTap = useCallback(() => {

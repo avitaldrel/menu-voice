@@ -30,7 +30,7 @@ export function createSpeechRecognition(): SpeechRecognition | null {
   const SpeechRecognitionCtor =
     window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognitionCtor();
-  recognition.continuous = false;
+  recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = 'en-US';
   recognition.maxAlternatives = 1;
@@ -58,6 +58,8 @@ export class SpeechManager {
   private shouldRestart: boolean = false;
   private lastTranscript: string = '';
   private restartTimeout: ReturnType<typeof setTimeout> | null = null;
+  private silenceTimer: ReturnType<typeof setTimeout> | null = null;
+  private static readonly SILENCE_TIMEOUT_MS = 2000;
 
   constructor(
     private onTranscript: (transcript: string) => void,
@@ -66,6 +68,13 @@ export class SpeechManager {
   ) {
     this.recognition = createSpeechRecognition();
     this.attachHandlers();
+  }
+
+  private clearSilenceTimer(): void {
+    if (this.silenceTimer !== null) {
+      clearTimeout(this.silenceTimer);
+      this.silenceTimer = null;
+    }
   }
 
   private attachHandlers(): void {
@@ -81,18 +90,28 @@ export class SpeechManager {
 
         // Voice command detection — stop here, do not pass to onTranscript
         if (isVoiceCommand(transcript)) {
+          this.clearSilenceTimer();
           this.stop();
           return;
         }
 
-        this.shouldRestart = false;
-        this.onTranscript(transcript);
+        // Reset 2-second silence timer — wait for user to fully finish speaking
+        this.clearSilenceTimer();
+        this.silenceTimer = setTimeout(() => {
+          this.silenceTimer = null;
+          const t = this.lastTranscript;
+          this.lastTranscript = '';
+          this.shouldRestart = false;
+          this.recognition?.stop();
+          this.onTranscript(t);
+        }, SpeechManager.SILENCE_TIMEOUT_MS);
       }
     };
 
     this.recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       // Fatal errors: do not restart
       if (event.error === 'not-allowed' || event.error === 'audio-capture') {
+        this.clearSilenceTimer();
         this.shouldRestart = false;
         this.onError('Microphone permission denied');
         return;
@@ -102,6 +121,18 @@ export class SpeechManager {
     };
 
     this.recognition.onend = () => {
+      // Browser ended recognition early (e.g. iOS timeout) while silence timer pending
+      if (this.silenceTimer) {
+        this.clearSilenceTimer();
+        const t = this.lastTranscript;
+        if (t) {
+          this.lastTranscript = '';
+          this.shouldRestart = false;
+          this.onTranscript(t);
+          return;
+        }
+      }
+
       if (this.shouldRestart) {
         // 300ms delay avoids rate limiting per research
         this.restartTimeout = setTimeout(() => {
@@ -126,6 +157,7 @@ export class SpeechManager {
    */
   stop(): void {
     this.shouldRestart = false;
+    this.clearSilenceTimer();
     if (this.restartTimeout !== null) {
       clearTimeout(this.restartTimeout);
       this.restartTimeout = null;
@@ -138,6 +170,7 @@ export class SpeechManager {
    */
   destroy(): void {
     this.shouldRestart = false;
+    this.clearSilenceTimer();
     if (this.restartTimeout !== null) {
       clearTimeout(this.restartTimeout);
       this.restartTimeout = null;

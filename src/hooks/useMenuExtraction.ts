@@ -36,10 +36,12 @@ export function useMenuExtraction(dispatch: React.Dispatch<AppAction>) {
       const menu: Menu = await res.json();
 
       // Step 3: Quality detection — dispatch EXTRACTION_LOW_QUALITY for low-confidence or warned extractions
-      const isLowQuality = menu.extractionConfidence < 0.3 || menu.warnings.length > 0;
+      // Filter out warnings that are just about the restaurant name — that's not worth a retake
+      const significantWarnings = menu.warnings.filter(w => !/restaurant\s*name/i.test(w));
+      const isLowQuality = menu.extractionConfidence < 0.3 || significantWarnings.length > 0;
       if (isLowQuality) {
-        const guidanceText = menu.warnings.length > 0
-          ? `${menu.warnings[0]} Please retake for a better result.`
+        const guidanceText = significantWarnings.length > 0
+          ? `${significantWarnings[0]} Please retake for a better result.`
           : 'The photo was difficult to read clearly. Please try retaking in better lighting.';
         dispatch({
           type: 'EXTRACTION_LOW_QUALITY',

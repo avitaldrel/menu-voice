@@ -94,11 +94,11 @@ describe('VoiceButton', () => {
     expect(svg).toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('has 96px circle classes (w-24 h-24 rounded-full)', () => {
+  it('has 128px circle classes (w-32 h-32 rounded-full)', () => {
     render(<VoiceButton status="idle" onTap={vi.fn()} />);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('w-24');
-    expect(button).toHaveClass('h-24');
+    expect(button).toHaveClass('w-32');
+    expect(button).toHaveClass('h-32');
     expect(button).toHaveClass('rounded-full');
   });
 });

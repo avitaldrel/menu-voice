@@ -65,9 +65,9 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toContain('Calamari');
   });
 
-  it('includes the persona instruction "helpful restaurant guide"', () => {
+  it('includes the persona instruction "restaurant guide"', () => {
     const prompt = buildSystemPrompt(testMenu);
-    expect(prompt).toContain('helpful restaurant guide');
+    expect(prompt).toContain('restaurant guide');
   });
 
   it('includes the "3 sentences" constraint', () => {

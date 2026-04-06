@@ -1,6 +1,7 @@
 import type { Menu } from './menu-schema';
 
 export type AppState =
+  | { status: 'welcome' }
   | { status: 'idle' }
   | { status: 'processing'; fileCount: number }
   | { status: 'results'; menu: Menu; sessionId: number }
@@ -15,7 +16,8 @@ export type AppAction =
   | { type: 'PROCEED_ANYWAY' }
   | { type: 'RETRY_CAPTURE' }
   | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
+  | { type: 'START' };
 
 export function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
@@ -37,10 +39,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       if (state.status !== 'retake') return state;
       return { status: 'results', menu: state.menu, sessionId: state.sessionId };
     case 'RETRY_CAPTURE':
+      return { status: 'welcome' };
+    case 'START':
       return { status: 'idle' };
     case 'RETRY':
     case 'RESET':
-      return { status: 'idle' };
+      return { status: 'welcome' };
     default:
       return state;
   }

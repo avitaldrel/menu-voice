@@ -46,16 +46,16 @@ describe('appReducer', () => {
     expect(result).toEqual({ status: 'error', message: 'API failed', retryable: true });
   });
 
-  it('transitions back to idle on RETRY', () => {
+  it('transitions back to welcome on RETRY', () => {
     const state: AppState = { status: 'error', message: 'fail', retryable: true };
     const result = appReducer(state, { type: 'RETRY' });
-    expect(result).toEqual({ status: 'idle' });
+    expect(result).toEqual({ status: 'welcome' });
   });
 
-  it('transitions back to idle on RESET', () => {
+  it('transitions back to welcome on RESET', () => {
     const state: AppState = { status: 'results', menu: mockMenu, sessionId: 1 };
     const result = appReducer(state, { type: 'RESET' });
-    expect(result).toEqual({ status: 'idle' });
+    expect(result).toEqual({ status: 'welcome' });
   });
 
   it('transitions from processing to retake on EXTRACTION_LOW_QUALITY', () => {
@@ -88,7 +88,7 @@ describe('appReducer', () => {
     expect(result).toEqual({ status: 'results', menu: mockMenu, sessionId: 1 });
   });
 
-  it('transitions from retake to idle on RETRY_CAPTURE', () => {
+  it('transitions from retake to welcome on RETRY_CAPTURE', () => {
     const state: AppState = {
       status: 'retake',
       menu: mockMenu,
@@ -97,7 +97,7 @@ describe('appReducer', () => {
       guidance: 'The photo was blurry.',
     };
     const result = appReducer(state, { type: 'RETRY_CAPTURE' });
-    expect(result).toEqual({ status: 'idle' });
+    expect(result).toEqual({ status: 'welcome' });
   });
 
   it('increments attemptCount when EXTRACTION_LOW_QUALITY dispatched from retake state', () => {

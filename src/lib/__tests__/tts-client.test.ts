@@ -66,6 +66,42 @@ describe('splitSentences', () => {
     const result = splitSentences('First sentence.  Second sentence!');
     expect(result).toEqual(['First sentence.', 'Second sentence!']);
   });
+
+  // Regression tests for food-name truncation bug:
+  // splitSentences previously dropped any trailing fragment that had no terminal
+  // punctuation, causing food names like "Pappardelle" or "Gochujang Glazed Salmon"
+  // to be silently lost when they appeared at the end of a buffer.
+
+  it('preserves trailing fragment without terminal punctuation as last element', () => {
+    // "Pappardelle" has no terminal punctuation — must not be dropped
+    const result = splitSentences('Spaghetti Carbonara. Pappardelle');
+    expect(result).toEqual(['Spaghetti Carbonara.', 'Pappardelle']);
+  });
+
+  it('preserves long compound food name as trailing fragment', () => {
+    const result = splitSentences('We recommend two dishes. Grilled Mediterranean Chicken with Herb-Crusted Polenta');
+    expect(result).toEqual(['We recommend two dishes.', 'Grilled Mediterranean Chicken with Herb-Crusted Polenta']);
+  });
+
+  it('preserves foreign food name as trailing fragment', () => {
+    const result = splitSentences('Try our specials. Gochujang Glazed Salmon');
+    expect(result).toEqual(['Try our specials.', 'Gochujang Glazed Salmon']);
+  });
+
+  it('handles multiple complete sentences plus trailing fragment — preserves all text', () => {
+    const result = splitSentences('Spaghetti Carbonara. Pappardelle. Gochujang Glazed');
+    expect(result).toEqual(['Spaghetti Carbonara.', 'Pappardelle.', 'Gochujang Glazed']);
+  });
+
+  it('returns empty array for empty string', () => {
+    const result = splitSentences('');
+    expect(result).toEqual([]);
+  });
+
+  it('returns empty array for whitespace-only string', () => {
+    const result = splitSentences('   ');
+    expect(result).toEqual([]);
+  });
 });
 
 describe('TTSClient', () => {

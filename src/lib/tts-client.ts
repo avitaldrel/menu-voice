@@ -10,13 +10,39 @@
 
 /**
  * Split text on terminal punctuation (.!?) followed by whitespace or end of string.
- * Returns single-element array with trimmed input if no sentence boundaries found.
+ *
+ * Returns an array where every element except possibly the last is a complete
+ * sentence (ends with .!?). The last element may be a trailing fragment that
+ * has no terminal punctuation yet — callers should keep it in the buffer until
+ * more text arrives or a flush() call forces it out.
+ *
+ * Critically, no text is ever dropped: the total text round-trips losslessly
+ * through join(' ') (modulo leading/trailing whitespace normalization).
  */
 export function splitSentences(text: string): string[] {
-  const matches = text.match(/[^.!?]+[.!?]+(\s|$)?/g);
-  if (!matches) return [text.trim()].filter(Boolean);
-  const sentences = matches.map((s) => s.trim()).filter(Boolean);
-  return sentences.length > 0 ? sentences : [text.trim()];
+  const re = /[^.!?]+[.!?]+(\s|$)?/g;
+  const sentences: string[] = [];
+  let lastMatchEnd = 0;
+
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(text)) !== null) {
+    sentences.push(match[0].trim());
+    lastMatchEnd = re.lastIndex;
+  }
+
+  // Capture any trailing fragment that had no terminal punctuation
+  const trailing = text.slice(lastMatchEnd).trim();
+  if (trailing) {
+    sentences.push(trailing);
+  }
+
+  // If nothing was found at all, return the whole trimmed text as one element
+  if (sentences.length === 0) {
+    const trimmed = text.trim();
+    return trimmed ? [trimmed] : [];
+  }
+
+  return sentences;
 }
 
 /**
@@ -27,7 +53,7 @@ export function splitSentences(text: string): string[] {
 function speakWithSynthesis(text: string, onDone: () => void): void {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
-  utterance.rate = 1.0;
+  utterance.rate = 1.45;
   utterance.volume = 1.0;
 
   // Store reference on window to prevent iOS GC bug
@@ -80,7 +106,9 @@ export class TTSClient {
     const sentences = splitSentences(this.buffer);
 
     if (sentences.length > 1) {
-      // All but the last are complete sentences
+      // All but the last are complete sentences — enqueue them now.
+      // Keep the last segment in the buffer in case it is a partial sentence
+      // (the next streaming chunk may continue it before any terminal punctuation).
       const complete = sentences.slice(0, -1);
       this.buffer = sentences[sentences.length - 1] ?? '';
       for (const sentence of complete) {
@@ -89,7 +117,17 @@ export class TTSClient {
       if (!this.isPlaying) {
         this.playNext();
       }
+    } else if (sentences.length === 1 && /[.!?](\s|$)/.test(sentences[0])) {
+      // Single sentence that already ends with terminal punctuation — it is
+      // complete. Enqueue it immediately so food names are not held back an
+      // extra chunk waiting for a second sentence that may never arrive mid-stream.
+      this.queue.push(sentences[0]);
+      this.buffer = '';
+      if (!this.isPlaying) {
+        this.playNext();
+      }
     }
+    // else: single fragment without terminal punctuation — keep in buffer
   }
 
   /**

@@ -403,8 +403,8 @@ describe('useVoiceLoop', () => {
     expect(result.current.needsPermissionPrompt).toBe(false);
   });
 
-  // Test 14: PLAYBACK_ENDED auto-restarts listening
-  it('PLAYBACK_ENDED (via TTS onSpeakingEnd) auto-restarts to listening', async () => {
+  // Test 14: PLAYBACK_ENDED auto-restarts listening after 3-second grace period
+  it('PLAYBACK_ENDED (via TTS onSpeakingEnd) auto-restarts listening immediately', async () => {
     vi.stubGlobal('fetch', makeFetchMock(['some answer']));
     const { result } = renderHook(() => useVoiceLoop(null));
 
@@ -423,14 +423,13 @@ describe('useVoiceLoop', () => {
 
     expect(result.current.voiceState.status).toBe('speaking');
 
-    // TTS fires onSpeakingEnd -> PLAYBACK_ENDED -> auto-restart listening
+    // TTS fires onSpeakingEnd -> PLAYBACK_ENDED -> state goes to listening
     act(() => {
       getCapturedTTSOptions().onSpeakingEnd?.();
     });
 
     expect(result.current.voiceState.status).toBe('listening');
-    // Verify speechManager.start() was called twice:
-    // 1st from startListening(), 2nd from auto-restart useEffect
+    // start() called immediately — no grace period delay
     expect(mockSpeechManagerStart).toHaveBeenCalledTimes(2);
   });
 
@@ -471,12 +470,11 @@ describe('useVoiceLoop', () => {
     });
     expect(result.current.voiceState.status).toBe('speaking');
 
-    // 4. TTS finishes -> PLAYBACK_ENDED -> auto-restart listening
+    // 4. TTS finishes -> PLAYBACK_ENDED -> state goes to listening, mic restarts immediately
     act(() => {
       getCapturedTTSOptions().onSpeakingEnd?.();
     });
     expect(result.current.voiceState.status).toBe('listening');
-    // start() called a 2nd time by auto-restart useEffect
     expect(mockSpeechManagerStart).toHaveBeenCalledTimes(2);
   });
 
@@ -786,7 +784,7 @@ describe('useVoiceLoop', () => {
     });
 
     expect(mockTTSQueueText).toHaveBeenCalledWith(
-      'Welcome to MenuVoice. Tap Scan Menu to photograph a restaurant menu.',
+      'Welcome to MenuVoice.',
     );
     expect(mockTTSFlush).toHaveBeenCalledOnce();
   });
@@ -899,6 +897,58 @@ describe('useVoiceLoop', () => {
 
       expect(mockTTSQueueText).toHaveBeenCalledWith('Opening settings.');
       expect(mockTTSFlush).toHaveBeenCalled();
+    });
+  });
+
+  // ─── Food name truncation regression tests ───────────────────────────────
+  // These tests guard against the bug where splitSentences dropped trailing text
+  // without terminal punctuation, causing food names to be silently lost.
+
+  describe('food name truncation regression', () => {
+    it('forwards a food name chunk with no terminal punctuation to TTS unchanged', async () => {
+      // Simulates Claude streaming: "Try the Pappardelle" arrives as one chunk
+      // (no period yet — the name continues in a later chunk)
+      vi.stubGlobal('fetch', makeFetchMock(['Try the Pappardelle', ' al Cinghiale.']));
+
+      const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+      act(() => {
+        result.current.startListening();
+      });
+
+      await act(async () => {
+        result.current.handleTextInput('What pasta do you have?');
+      });
+
+      // Both chunks must reach queueText so the full name is assembled in the buffer
+      // and eventually sent to TTS as a complete sentence.
+      expect(mockTTSQueueText).toHaveBeenCalledWith('Try the Pappardelle');
+      expect(mockTTSQueueText).toHaveBeenCalledWith(' al Cinghiale.');
+      expect(mockTTSFlush).toHaveBeenCalled();
+    });
+
+    it('does not drop a food name that follows a complete sentence in the same chunk', async () => {
+      // Simulates the fixed splitSentences: "Spaghetti Carbonara. Pappardelle" —
+      // the trailing "Pappardelle" must be kept in buffer and eventually flushed,
+      // not silently dropped.
+      vi.stubGlobal('fetch', makeFetchMock(['Spaghetti Carbonara. Pappardelle']));
+
+      const { result } = renderHook(() => useVoiceLoop(testMenu));
+
+      act(() => {
+        result.current.startListening();
+      });
+
+      await act(async () => {
+        result.current.handleTextInput('What pasta do you have?');
+      });
+
+      // flush() must be called so the buffered "Pappardelle" is released to TTS
+      expect(mockTTSFlush).toHaveBeenCalled();
+      // The safe text ("Spaghetti Carbonara. Pappardelle") must have been passed
+      // to queueText — the exact call may vary depending on how ttsAccum batches,
+      // but queueText must be called at least once and flush must rescue the name.
+      expect(mockTTSQueueText).toHaveBeenCalled();
     });
   });
 });

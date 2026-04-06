@@ -25,7 +25,7 @@ export function ScanButton({ onFilesSelected, disabled, variant = 'primary', lab
     'w-full min-h-[72px] text-2xl font-semibold bg-accent text-accent-foreground rounded-2xl shadow-lg hover:shadow-xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 active:bg-accent-hover active:scale-[0.98] transition-all';
 
   const secondaryClasses =
-    'w-full min-h-[48px] text-base font-normal bg-muted text-foreground border border-muted-foreground/30 rounded-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 active:scale-[0.98] transition-all';
+    'w-full min-h-[64px] text-xl font-medium bg-muted text-foreground border border-muted-foreground/30 rounded-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 active:scale-[0.98] transition-all';
 
   return (
     <>

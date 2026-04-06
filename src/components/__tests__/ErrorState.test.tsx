@@ -26,9 +26,9 @@ describe('ErrorState', () => {
     expect(onRetry).toHaveBeenCalledOnce();
   });
 
-  it('retry button has min-h-[48px] class for touch target (A11Y-03)', () => {
+  it('retry button has min-h-[64px] class for touch target (A11Y-03)', () => {
     render(<ErrorState message="Error" onRetry={vi.fn()} />);
     const button = screen.getByRole('button', { name: /try again/i });
-    expect(button.className).toContain('min-h-[48px]');
+    expect(button.className).toContain('min-h-[64px]');
   });
 });

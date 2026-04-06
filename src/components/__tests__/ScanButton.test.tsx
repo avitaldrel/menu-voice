@@ -40,10 +40,10 @@ describe('ScanButton', () => {
     expect(button.className).toContain('min-h-[72px]');
   });
 
-  it('secondary variant button has min-h-[48px] class for touch target (A11Y-03)', () => {
+  it('secondary variant button has min-h-[64px] class for touch target (A11Y-03)', () => {
     render(<ScanButton onFilesSelected={vi.fn()} variant="secondary" />);
     const button = screen.getByRole('button');
-    expect(button.className).toContain('min-h-[48px]');
+    expect(button.className).toContain('min-h-[64px]');
   });
 
   it('renders with custom label prop', () => {

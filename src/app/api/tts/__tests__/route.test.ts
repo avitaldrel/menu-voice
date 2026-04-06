@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 
 describe('POST /api/tts', () => {
-  it('calls openai.audio.speech.create with tts-1 model and nova voice, returns audio/mpeg', async () => {
+  it('calls openai.audio.speech.create with tts-1 model and shimmer voice, returns audio/mpeg', async () => {
     const fakeAudioBody = new ReadableStream();
     mockSpeechCreate.mockResolvedValue({ body: fakeAudioBody });
 
@@ -40,9 +40,10 @@ describe('POST /api/tts', () => {
 
     expect(mockSpeechCreate).toHaveBeenCalledWith({
       model: 'tts-1',
-      voice: 'nova',
+      voice: 'shimmer',
       input: 'Hello world',
       response_format: 'mp3',
+      speed: 1.45,
     });
     expect(response.headers.get('Content-Type')).toBe('audio/mpeg');
     expect(response.status).toBe(200);

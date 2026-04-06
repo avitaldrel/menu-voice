@@ -18,7 +18,7 @@ const ARIA_LABELS: Record<VoiceState['status'], string> = {
 
 function getButtonClasses(status: VoiceState['status']): string {
   const base =
-    'w-24 h-24 rounded-full flex items-center justify-center ' +
+    'w-32 h-32 rounded-full flex items-center justify-center ' +
     'focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent ' +
     'transition-colors';
 
@@ -50,8 +50,8 @@ export function VoiceButton({ status, onTap, disabled }: VoiceButtonProps) {
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="40"
-        height="40"
+        width="48"
+        height="48"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

@@ -27,7 +27,7 @@ describe('createSpeechRecognition', () => {
   it('returns a SpeechRecognition instance with correct configuration', () => {
     const recognition = createSpeechRecognition();
     expect(recognition).not.toBeNull();
-    expect(recognition!.continuous).toBe(false);
+    expect(recognition!.continuous).toBe(true);
     expect(recognition!.interimResults).toBe(true);
     expect(recognition!.lang).toBe('en-US');
     expect(recognition!.maxAlternatives).toBe(1);
@@ -92,38 +92,26 @@ describe('SpeechManager', () => {
     expect(mockRecognitionInstance.stop).toHaveBeenCalledOnce();
   });
 
-  it('extracts transcript from last result in onresult event', () => {
+  it('extracts transcript from last result in onresult event after 2s silence', () => {
+    vi.useFakeTimers();
     manager.start();
-    // Simulate onresult with isFinal=true
-    const event = {
-      results: {
-        length: 1,
-        [Symbol.iterator]: function* () {
-          yield [{ transcript: 'what are the pasta options', confidence: 0.9 }];
-        },
-        0: [{ transcript: 'what are the pasta options', confidence: 0.9, isFinal: true }],
-      },
-    } as unknown as SpeechRecognitionEvent;
-    // Manually set results length as needed
-    (event.results as unknown as { length: number }).length = 1;
-
-    // Directly invoke the handler
     if (mockRecognitionInstance.onresult) {
       const evt = {
         results: [
           Object.assign([{ transcript: 'what are the pasta options' }], { isFinal: true }),
         ],
       } as unknown as SpeechRecognitionEvent;
-      evt.results[evt.results.length - 1] = Object.assign(
-        [{ transcript: 'what are the pasta options' }],
-        { isFinal: true }
-      );
       mockRecognitionInstance.onresult(evt);
     }
+    // Not called immediately — waiting for 2s silence
+    expect(onTranscript).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(2000);
     expect(onTranscript).toHaveBeenCalledWith('what are the pasta options');
+    vi.useRealTimers();
   });
 
-  it('handles iOS isFinal=false by using transcript length fallback', () => {
+  it('handles iOS isFinal=false by using transcript length fallback after 2s silence', () => {
+    vi.useFakeTimers();
     manager.start();
     if (mockRecognitionInstance.onresult) {
       const evt = {
@@ -133,7 +121,10 @@ describe('SpeechManager', () => {
       } as unknown as SpeechRecognitionEvent;
       mockRecognitionInstance.onresult(evt);
     }
+    expect(onTranscript).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(2000);
     expect(onTranscript).toHaveBeenCalledWith('some speech here');
+    vi.useRealTimers();
   });
 
   it('does not restart when onend fires after stop()', () => {
