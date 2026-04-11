@@ -9,23 +9,29 @@ A blind person can independently understand and choose from any restaurant menu 
 ## Requirements
 
 ### Validated
-- [x] Capture photos of restaurant menu pages (multiple pages supported) — Validated in Phase 1: Foundation & Menu Capture
-- [x] Process menu photos via AI vision into structured menu data — Validated in Phase 1: Foundation & Menu Capture
-- [x] Screen reader and keyboard accessible (foundation) — Validated in Phase 1: Foundation & Menu Capture
-- [x] Fully voice-controlled interface (speech recognition + text-to-speech) — Validated in Phase 2: Voice Interface
-- [x] Natural AI voice output with browser TTS fallback — Validated in Phase 2: Voice Interface
-- [x] Proactive restaurant/menu overview after processing photos — Validated in Phase 3: Menu Exploration via Voice
-- [x] Conversational menu exploration (categories, items, ingredients, prices) — Validated in Phase 3: Menu Exploration via Voice
-
-- [x] Help user decide what to order through natural conversation — Validated in Phase 4: Smart Conversation & Decision Support
-- [x] User profile with allergies and food preferences (stored locally) — Validated in Phase 5: Allergy & Preference System
-- [x] In-conversation allergy/dislike capture (even without prior profile setup) — Validated in Phase 5: Allergy & Preference System
-- [x] Proactive allergy/preference warnings on every mentioned item — Validated in Phase 5: Allergy & Preference System
-- [x] Suggest asking server about allergen-free modifications — Validated in Phase 5: Allergy & Preference System
+- ✓ Capture photos of restaurant menu pages (multiple pages supported) — v1.0
+- ✓ Process menu photos via AI vision into structured menu data — v1.0
+- ✓ Screen reader and keyboard accessible — v1.0
+- ✓ Fully voice-controlled interface (speech recognition + text-to-speech) — v1.0
+- ✓ Natural AI voice output with browser TTS fallback — v1.0
+- ✓ Proactive restaurant/menu overview after processing photos — v1.0
+- ✓ Conversational menu exploration (categories, items, ingredients, prices) — v1.0
+- ✓ Help user decide what to order through natural conversation — v1.0
+- ✓ User profile with allergies and food preferences (stored locally) — v1.0
+- ✓ In-conversation allergy/dislike capture (even without prior profile setup) — v1.0
+- ✓ Proactive allergy/preference warnings on every mentioned item — v1.0
+- ✓ Suggest asking server about allergen-free modifications — v1.0
+- ✓ Guide user to retake photos when text is unreadable — v1.0
+- ✓ Full VoiceOver/screen reader accessibility with ARIA live regions — v1.0
+- ✓ Warm visual design with smooth state transitions — v1.0
+- ✓ Voice commands for hands-free navigation (settings, scan new menu) — v1.0
+- ✓ Tutorial and contextual hint system for new users — v1.0
+- ✓ Security headers (CSP, Permissions-Policy) on all responses — v1.0
+- ✓ Usage logging on all API routes — v1.0
+- ✓ Deployed to Vercel production — v1.0
 
 ### Active
-- [ ] Guide user to retake photos when text is unreadable
-- [ ] Screen reader and keyboard accessible (full hardening)
+(None — fresh requirements needed for next milestone)
 
 ### Out of Scope
 - Native mobile app (deferred to future milestone)
@@ -86,7 +92,24 @@ A blind person can independently understand and choose from any restaurant menu 
 - Track decision outcomes as phases reveal what works
 
 ## Current State
-Phase 5 complete — Allergy/preference profile with IndexedDB persistence, in-conversation capture via markers, proactive allergen warnings, modification suggestions, safety disclaimer, and settings page CRUD. 240 tests passing across 21 files. Ready for Phase 6: Accessibility Hardening & Guided Retake.
+**v1.0 MVP shipped 2026-04-11** — Live at https://menu-voice.vercel.app/
+
+Full voice-first menu navigation app: camera capture → Claude Vision extraction → streaming voice conversation with allergy awareness → OpenAI TTS responses. 8 phases, 24 plans, 296 tests, 7,055 LOC TypeScript. Deployed to Vercel with security headers and usage logging.
+
+**Tech stack:** Next.js 15, Claude API (claude-sonnet-4-6), OpenAI TTS (tts-1/shimmer), Web Speech API, IndexedDB, Tailwind CSS.
+
+**Known production issue:** Edge Runtime removed from extract route due to 504 timeouts — runs as Node.js serverless with maxDuration=60s.
+
+## Key Decisions
+
+| Decision | Context | Outcome |
+|---|---|---|
+| Web app before native | Faster to ship, broader access, no app store friction | ✓ Good — shipped in 13 days |
+| Local storage over accounts | Zero friction for blind users, no login flow to navigate | ✓ Good — IndexedDB works well |
+| Claude for AI backend | User preference; handles both vision and conversation well | ✓ Good — vision + chat in one SDK |
+| AI TTS with browser fallback | Natural voice for best experience; fallback for reliability | ✓ Good — OpenAI TTS quality is excellent |
+| Next.js framework | API routes hide keys; React ecosystem; good a11y support | ✓ Good — Vercel deploy seamless |
+| Node.js serverless over Edge Runtime | Edge 25s timeout too short for Claude Vision | ✓ Good — 60s timeout works |
 
 ## Last Updated
-2026-03-31 (after Phase 5 completion)
+2026-04-11 (after v1.0 milestone completion)
