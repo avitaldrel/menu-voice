@@ -48,7 +48,7 @@ completed: 2026-04-05
 - **Duration:** ~5 min
 - **Started:** 2026-04-05
 - **Completed:** 2026-04-05 (Task 1 complete; Task 2 awaiting human deployment)
-- **Tasks:** 1 of 2 complete (Task 2 is human-verify checkpoint)
+- **Tasks:** 2 of 2 complete
 - **Files modified:** 1 (+ 23 Phase 7 source files committed)
 
 ## Accomplishments
@@ -59,9 +59,10 @@ completed: 2026-04-05
 - Ran `npm run build` — production build exits 0; all three API routes compile correctly (`/api/menu/extract` as Edge, `/api/chat` and `/api/tts` as Dynamic serverless)
 - Committed all uncommitted Phase 7 source changes (TTS stream marker fix, voice loop 3s grace period, thinking-chime/speech-recognition/tts-client/app-state/chat-prompt improvements) together with `.env.example` update — working tree is now clean
 
-### Task 2 (Awaiting Human)
-- Pending: User deploys to Vercel (push to GitHub, import repo in Vercel dashboard, add env vars, deploy)
-- Pending: Smoke tests on production URL (6 tests: page load, security headers, menu capture, voice conversation, usage logs, settings page)
+### Task 2 (Completed)
+- App deployed to Vercel at https://menu-voice.vercel.app/
+- Edge Runtime removed due to 504 timeouts — route runs as Node.js serverless with maxDuration=60s
+- User confirmed voice conversation works end-to-end on production (menu scan → chat → TTS)
 
 ## Task Commits
 
@@ -115,4 +116,4 @@ None — `.env.example` documents placeholder values (`ANTHROPIC_API_KEY=`, `OPE
 ---
 *Phase: 08-vercel-production-deployment*
 *Task 1 completed: 2026-04-05*
-*Task 2: Awaiting human deployment and smoke testing*
+*Task 2 completed: 2026-04-11 — deployed at https://menu-voice.vercel.app/*
