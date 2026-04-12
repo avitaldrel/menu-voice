@@ -41,7 +41,6 @@ export function ScanButton({ onFilesSelected, disabled, variant = 'primary', lab
         ref={inputRef}
         type="file"
         accept="image/*"
-        capture="environment"
         multiple
         className="sr-only"
         aria-hidden="true"

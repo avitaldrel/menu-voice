@@ -13,7 +13,7 @@ Voice-first web app helping blind and visually impaired people navigate restaura
 ## Critical Architecture Decisions
 - TTS output MUST use `<audio>` element, NOT browser SpeechSynthesis — avoids screen reader conflict
 - Voice loop uses strict state machine: `idle | listening | processing | speaking | error`
-- Photo capture uses `<input type="file" capture="environment">` — accessible to VoiceOver/TalkBack
+- Photo capture uses `<input type="file" accept="image/*">` without `capture` — lets user choose camera OR gallery
 - All menu photos sent in single Claude Vision call for cross-page context
 - Full menu JSON injected into system prompt (~3-5K tokens) — no summarization
 - Streaming + sentence buffering for TTS to reduce perceived latency
