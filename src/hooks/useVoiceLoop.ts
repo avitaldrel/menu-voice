@@ -143,6 +143,8 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
         ? [...messagesRef.current, { role: 'user', content: userText }]
         : [...messagesRef.current]; // overview: already primed
 
+    let fullResponse = '';
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -158,7 +160,6 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let fullResponse = '';
       // ttsAccum holds text not yet forwarded to TTS. We hold back from the
       // last '[' onwards to prevent partial markers from reaching the TTS queue.
       let ttsAccum = '';
@@ -243,6 +244,17 @@ export function useVoiceLoop(menu: Menu | null, onRetakeRequested?: () => void):
         // Intentional cancel — flush whatever was buffered before the abort so
         // any food names already received are spoken rather than silently dropped.
         ttsClientRef.current?.flush();
+        return;
+      }
+      // Stream cutoff (e.g. Vercel timeout) — if we already have partial response,
+      // flush and use what we got instead of showing an error
+      if (fullResponse.length > 20) {
+        const spokenText = stripMarkers(fullResponse).replace(/\[RETAKE\]/gi, '').trim();
+        ttsClientRef.current?.flush();
+        responseRef.current = spokenText;
+        setResponseText(spokenText);
+        messagesRef.current = [...nextMessages, { role: 'assistant', content: spokenText }];
+        setConversationMessages([...messagesRef.current]);
         return;
       }
       dispatch({ type: 'ERROR', message: 'Conversation error' });

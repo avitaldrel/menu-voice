@@ -3,7 +3,7 @@ import { buildSystemPrompt, type ChatMessage } from '@/lib/chat-prompt';
 import type { Menu } from '@/lib/menu-schema';
 import type { UserProfile } from '@/lib/indexeddb';
 
-export const maxDuration = 30;
+export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
