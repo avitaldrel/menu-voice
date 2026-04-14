@@ -37,8 +37,22 @@ export function useMenuExtraction(dispatch: React.Dispatch<AppAction>) {
 
       // Step 3: Quality detection — dispatch EXTRACTION_LOW_QUALITY for low-confidence or warned extractions
       // Filter out warnings that are just about the restaurant name — that's not worth a retake
-      const significantWarnings = menu.warnings.filter(w => !/restaurant\s*name/i.test(w));
+      const significantWarnings = (menu.warnings ?? []).filter(w => !/restaurant\s*name/i.test(w));
       const isLowQuality = menu.extractionConfidence < 0.3 || significantWarnings.length > 0;
+
+      // Step 4: Save to IndexedDB (non-blocking — don't let storage failure hide a good extraction)
+      let sessionId = 0;
+      try {
+        sessionId = await saveSession({
+          restaurantName: menu.restaurantName,
+          menuType: menu.menuType,
+          timestamp: Date.now(),
+          menu,
+        });
+      } catch {
+        // IndexedDB can fail on mobile (private browsing, storage full) — continue anyway
+      }
+
       if (isLowQuality) {
         const guidanceText = significantWarnings.length > 0
           ? `${significantWarnings[0]} Please retake for a better result.`
@@ -46,25 +60,12 @@ export function useMenuExtraction(dispatch: React.Dispatch<AppAction>) {
         dispatch({
           type: 'EXTRACTION_LOW_QUALITY',
           menu,
-          sessionId: await saveSession({
-            restaurantName: menu.restaurantName,
-            menuType: menu.menuType,
-            timestamp: Date.now(),
-            menu,
-          }),
+          sessionId,
           guidance: guidanceText,
           attemptCount,
         });
         return;
       }
-
-      // Step 4: Save to IndexedDB for the recent sessions list (D-18)
-      const sessionId = await saveSession({
-        restaurantName: menu.restaurantName,
-        menuType: menu.menuType,
-        timestamp: Date.now(),
-        menu,
-      });
 
       // Step 5: Update app state to results
       dispatch({ type: 'EXTRACTION_SUCCESS', menu, sessionId });

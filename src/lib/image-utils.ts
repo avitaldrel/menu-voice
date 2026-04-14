@@ -4,18 +4,35 @@ export function resizeImage(file: File, maxDim = 1568): Promise<string> {
     const url = URL.createObjectURL(file);
     img.onload = () => {
       URL.revokeObjectURL(url);
-      const scale = Math.min(maxDim / img.width, maxDim / img.height, 1);
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
-      const ctx = canvas.getContext('2d')!;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      resolve(dataUrl.split(',')[1]);
+      try {
+        const scale = Math.min(maxDim / img.width, maxDim / img.height, 1);
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Could not create canvas context'));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        const base64 = dataUrl.split(',')[1];
+        if (!base64 || base64.length < 100) {
+          reject(new Error('Image conversion produced empty result — try a smaller photo or different format'));
+          return;
+        }
+        resolve(base64);
+      } catch (err) {
+        reject(new Error(
+          err instanceof Error ? err.message : 'Failed to process image — try a smaller photo'
+        ));
+      }
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error(`Failed to load image: ${file.name}`));
+      reject(new Error('Could not load image — the format may not be supported'));
     };
     img.src = url;
   });

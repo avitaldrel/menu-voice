@@ -186,7 +186,6 @@ export default function HomePage() {
         ref={cameraInputRef}
         type="file"
         accept="image/*"
-        capture="environment"
         multiple
         className="hidden"
         aria-hidden="true"
