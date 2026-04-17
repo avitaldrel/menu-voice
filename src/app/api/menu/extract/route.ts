@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
 
 // Route Handler config
@@ -16,9 +16,9 @@ export async function POST(request: Request) {
   }
 
   // Validate API key exists
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json(
-      { error: 'ANTHROPIC_API_KEY not configured' },
+      { error: 'OPENAI_API_KEY not configured' },
       { status: 500 }
     );
   }
@@ -58,25 +58,24 @@ export async function POST(request: Request) {
     timestamp: new Date().toISOString(),
   }));
 
-  const client = new Anthropic();
+  const client = new OpenAI();
 
   // Build content blocks: label each page then its image
-  const imageContent: Anthropic.MessageCreateParams['messages'][0]['content'] = images.flatMap((img, i) => [
+  const imageContent: OpenAI.Chat.ChatCompletionContentPart[] = images.flatMap((img, i) => [
     { type: 'text' as const, text: `Menu page ${i + 1} of ${images.length}:` },
     {
-      type: 'image' as const,
-      source: {
-        type: 'base64' as const,
-        media_type: (img.mimeType || 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif',
-        data: img.base64,
+      type: 'image_url' as const,
+      image_url: {
+        url: `data:${img.mimeType || 'image/jpeg'};base64,${img.base64}`,
       },
     },
   ]);
 
   try {
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o',
       max_tokens: 4096,
+      response_format: { type: 'json_object' },
       messages: [{
         role: 'user',
         content: [
@@ -122,11 +121,9 @@ Rules:
       }],
     });
 
-    // Extract text from response
-    const textBlock = response.content.find(block => block.type === 'text');
-    const raw = textBlock ? (textBlock as { type: 'text'; text: string }).text : '{}';
+    const raw = response.choices[0]?.message?.content ?? '{}';
 
-    // Strip accidental markdown fences (Pitfall 3)
+    // Strip accidental markdown fences
     const cleaned = raw.replace(/^```(?:json)?\s*/m, '').replace(/\s*```$/m, '').trim();
 
     let menu;

@@ -15,7 +15,8 @@
       "Bash(npx next:*)",
       "Skill(gsd:debug)",
       "Bash(npx vitest:*)",
-      "Skill(gsd-execute-phase)"
+      "Skill(gsd-execute-phase)",
+      "Bash(npm test:*)"
     ]
   }
 }

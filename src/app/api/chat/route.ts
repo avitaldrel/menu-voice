@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { buildSystemPrompt, type ChatMessage } from '@/lib/chat-prompt';
 import type { Menu } from '@/lib/menu-schema';
 import type { UserProfile } from '@/lib/indexeddb';
@@ -16,9 +16,9 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return Response.json(
-      { error: 'ANTHROPIC_API_KEY not configured' },
+      { error: 'OPENAI_API_KEY not configured' },
       { status: 500 }
     );
   }
@@ -50,33 +50,40 @@ export async function POST(request: Request) {
     timestamp: new Date().toISOString(),
   }));
 
-  const client = new Anthropic();
+  const client = new OpenAI();
   const systemPrompt = buildSystemPrompt(menu, profile);
-
-  const stream = client.messages.stream({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 512,
-    system: systemPrompt,
-    messages,
-  });
+  const abortController = new AbortController();
 
   const readable = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
-      stream.on('text', (textDelta) => {
-        controller.enqueue(encoder.encode(textDelta));
-      });
       try {
-        await stream.finalMessage();
+        const stream = await client.chat.completions.create({
+          model: 'gpt-4o',
+          max_tokens: 512,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...messages,
+          ],
+          stream: true,
+        }, { signal: abortController.signal });
+
+        for await (const chunk of stream) {
+          const text = chunk.choices[0]?.delta?.content ?? '';
+          if (text) controller.enqueue(encoder.encode(text));
+        }
       } catch (err) {
-        // Stream error — close with error unless already cancelled
-        const message = err instanceof Error ? err.message : 'Stream error';
-        controller.enqueue(encoder.encode(`\n[Error: ${message}]`));
+        if (err instanceof Error && err.name === 'AbortError') {
+          // Client disconnected — normal, no error to surface
+        } else {
+          const message = err instanceof Error ? err.message : 'Stream error';
+          controller.enqueue(encoder.encode(`\n[Error: ${message}]`));
+        }
       }
       controller.close();
     },
     cancel() {
-      stream.abort();
+      abortController.abort();
     },
   });
 

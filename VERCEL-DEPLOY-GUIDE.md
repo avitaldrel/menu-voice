@@ -8,41 +8,11 @@ This is a step-by-step guide for deploying the MenuVoice app to Vercel. Follow e
 
 The local repo has no remote yet. We need to create a GitHub repo and push.
 
-### Step 1: Create GitHub Repository
+### Step 1: Code is Already on GitHub
 
-1. Go to https://github.com/new
-2. Fill in:
-   - **Repository name:** `menu-voice`
-   - **Description:** `Voice-first menu accessibility app for blind and visually impaired diners`
-   - **Visibility:** Public (or Private — either works with Vercel)
-   - Do NOT initialize with README, .gitignore, or license (the local repo already has content)
-3. Click **Create repository**
+The code has been pushed to: https://github.com/avitaldrel/menu-voice
 
-### Step 2: Push Local Code to GitHub
-
-Open a terminal in the project directory (`C:\Users\2fire\All Coding\menu voice`) and run these commands one at a time:
-
-```
-git remote add origin https://github.com/2firemaster/menu-voice.git
-```
-
-```
-git branch -M main
-```
-
-```
-git push -u origin main
-```
-
-If prompted for credentials, use a GitHub Personal Access Token (PAT):
-- Go to https://github.com/settings/tokens
-- Click **Generate new token (classic)**
-- Select scopes: `repo` (full control)
-- Copy the token and use it as the password when prompted
-
-### Step 3: Verify Push Succeeded
-
-Go to https://github.com/2firemaster/menu-voice and confirm the code is there. You should see files like `next.config.ts`, `src/`, `package.json`, etc.
+Verify by visiting that URL — you should see files like `next.config.ts`, `src/`, `package.json`, etc.
 
 ---
 
